@@ -29,6 +29,11 @@ namespace AdminApi.Models
 
         public virtual DbSet<Category> Categories { get; set; }
 
+        public virtual DbSet<State> States{ get; set; }
+        public virtual DbSet<City> Cities{ get; set; }
+        public virtual DbSet<Area> Areas { get; set; }
+
+        public virtual DbSet<Banner> Banners { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {   
@@ -39,16 +44,55 @@ namespace AdminApi.Models
 
             //Hospital
 
-          modelBuilder.Entity<Category>()
+           modelBuilder.Entity<Category>()
             .Property(s => s.CreatedOn)
             .HasDefaultValue(System.DateTime.Now);
 
-          modelBuilder.Entity<Category>()
+           modelBuilder.Entity<Category>()
             .Property(s => s.IsDeleted)
             .HasDefaultValue(false)
             .ValueGeneratedNever();
 
-            
+
+            modelBuilder.Entity<State>()
+           .Property(s => s.CreatedOn)
+           .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<State>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+            modelBuilder.Entity<City>()
+           .Property(s => s.CreatedOn)
+           .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<City>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+            modelBuilder.Entity<Area>()
+        .Property(s => s.CreatedOn)
+        .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<Area>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+            modelBuilder.Entity<Banner>()
+       .Property(s => s.CreatedOn)
+       .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<Banner>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
 
             #endregion
         }
