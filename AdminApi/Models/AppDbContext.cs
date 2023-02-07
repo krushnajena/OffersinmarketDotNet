@@ -35,6 +35,11 @@ namespace AdminApi.Models
 
         public virtual DbSet<Banner> Banners { get; set; }
 
+        public virtual DbSet<Cuisine> Cuisines { get; set; }
+
+        public virtual DbSet<Store> Stores { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {   
 
@@ -89,6 +94,25 @@ namespace AdminApi.Models
        .HasDefaultValue(System.DateTime.Now);
 
             modelBuilder.Entity<Banner>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+            modelBuilder.Entity<Cuisine>()
+      .Property(s => s.CreatedOn)
+      .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<Cuisine>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+            modelBuilder.Entity<Store>()
+    .Property(s => s.CreatedOn)
+    .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<Store>()
              .Property(s => s.IsDeleted)
              .HasDefaultValue(false)
              .ValueGeneratedNever();

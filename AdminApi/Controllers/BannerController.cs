@@ -41,7 +41,19 @@ namespace AdminApi.Controllers
             _enviorment = enviorment;
             Configuration = configuration;
         }
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public IActionResult CreateBanner(BannerDTO bannerDto)
+        {
+            Banner banner = new Banner();
+            banner.BannerType = bannerDto.BannerType;
+            banner.OnClickType = bannerDto.OnClickType;
+            banner.OnClickId = bannerDto.OnClickId;
+            banner.Image = bannerDto.Image;
+            banner.CreatedBy = bannerDto.CreatedBy;
+            var obj = _bannerRepo.Insert(banner);
+            return Ok(obj);
 
-
+        }
     }
 }

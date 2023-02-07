@@ -11,7 +11,7 @@ namespace AdminApi.Models.App
         public string StoreName { get; set; }
         public int CategoryId { get; set; }
         public string OwnerName { get; set; }
-        public string BusineeContactInfo { get; set; }
+        public string BusineessContactInfo { get; set; }
         public string BusinessLogo { get; set; }
         public double? Lat { get; set; }
         public double? Long { get; set; }
