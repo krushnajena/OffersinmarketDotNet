@@ -196,5 +196,17 @@ namespace AdminApi.Controllers
             return Ok(objStores);
 
         }
+
+        [HttpGet()]
+        public IActionResult GetStores()
+        {
+          var a=  _context.Stores
+                        .Include(s => s.StoreRattings.Where(p => p.IsDeleted == false))
+
+                        .ToList();
+
+            return Ok(a);
+
+        }
     }
 }

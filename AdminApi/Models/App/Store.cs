@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 
 namespace AdminApi.Models.App
@@ -62,6 +63,7 @@ namespace AdminApi.Models.App
         public bool IsDeleted { get; set; }
 
 
-
+        public ICollection<StoreRatting> StoreRattings { get; set; }
+        public ICollection<Follower> Followers { get; set; }
     }
 }

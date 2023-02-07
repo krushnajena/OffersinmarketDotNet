@@ -40,16 +40,20 @@ namespace AdminApi.Models
         public virtual DbSet<Store> Stores { get; set; }
 
 
+        public virtual DbSet<StoreRatting> StoreRattings { get; set; }
+        public virtual DbSet<Follower> Followers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {   
 
             modelBuilder.Seed();//use this for Sql server,Mysql,Sqlite and PostgreSql
-            //modelBuilder.SeedOracle();//use this only for Oracle
+                                //modelBuilder.SeedOracle();//use this only for Oracle
             #region 
 
             //Hospital
 
-           modelBuilder.Entity<Category>()
+        
+                       modelBuilder.Entity<Category>()
             .Property(s => s.CreatedOn)
             .HasDefaultValue(System.DateTime.Now);
 
@@ -58,6 +62,26 @@ namespace AdminApi.Models
             .HasDefaultValue(false)
             .ValueGeneratedNever();
 
+
+
+            modelBuilder.Entity<StoreRatting>()
+           .Property(s => s.CreatedOn)
+           .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<StoreRatting>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+            modelBuilder.Entity<Follower>()
+           .Property(s => s.CreatedOn)
+           .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<Follower>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
 
             modelBuilder.Entity<State>()
            .Property(s => s.CreatedOn)
@@ -117,6 +141,9 @@ namespace AdminApi.Models
              .HasDefaultValue(false)
              .ValueGeneratedNever();
 
+            modelBuilder.Entity<Store>()
+               .HasMany(c => c.StoreRattings)
+               .WithOne(e => e.Store).IsRequired(false);
 
             #endregion
         }
