@@ -648,12 +648,13 @@ u.UserRoleId equals r.UserRoleId
             if (objCheck == null)
             {
                 Users users = new Users();
-                users.UserId = userRegistrationDTO.UserRoleId;
+                users.UserRoleId = userRegistrationDTO.UserRoleId;
                 users.FullName = userRegistrationDTO.FullName;
                 users.Mobile = userRegistrationDTO.Mobile;
                 users.Email = userRegistrationDTO.Email;
                 users.Password = userRegistrationDTO.Password;
                 users.UserName = userRegistrationDTO.Mobile;
+                users.DateAdded = DateTime.Now;
                 users.IsActive = true;
                 users.IsPasswordChange = true;
                 var obj = _userRepo.Insert(users);

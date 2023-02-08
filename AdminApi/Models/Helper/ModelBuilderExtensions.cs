@@ -1,4 +1,5 @@
 using System;
+using AdminApi.Models.App;
 using AdminApi.Models.Menu;
 using AdminApi.Models.User;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ namespace AdminApi.Models.Helper
             modelBuilder.Entity<MenuGroup>(b=>
             {               
                 b.HasKey(e=>e.MenuGroupID); 
-                b.Property(b=>b.MenuGroupID).HasIdentityOptions(startValue:3);                       
+                b.Property(b=>b.MenuGroupID).HasIdentityOptions(startValue:5);                       
                 b.HasData(new MenuGroup
                         {
                             MenuGroupID=1,
@@ -30,12 +31,32 @@ namespace AdminApi.Models.Helper
                             DateAdded=DateTime.Now,
                             AddedBy=1,
                             IsMigrationData=true  
-                        });
+                        },
+                        new MenuGroup
+                        {
+                            MenuGroupID = 3,
+                            MenuGroupName = "Buyer",
+                            IsActive = true,
+                            DateAdded = DateTime.Now,
+                            AddedBy = 1,
+                            IsMigrationData = true
+                        },
+                         new MenuGroup
+                         {
+                             MenuGroupID = 4,
+                             MenuGroupName = "Seller",
+                             IsActive = true,
+                             DateAdded = DateTime.Now,
+                             AddedBy = 1,
+                             IsMigrationData = true
+                         }
+
+                        );
             });
             modelBuilder.Entity<UserRole>(b=>
             {
                 b.HasKey(e=>e.UserRoleId);  
-                b.Property(b=>b.UserRoleId).HasIdentityOptions(startValue:3);        
+                b.Property(b=>b.UserRoleId).HasIdentityOptions(startValue:5);        
                 b.HasData(
                     new UserRole
                     {
@@ -56,9 +77,54 @@ namespace AdminApi.Models.Helper
                         DateAdded=DateTime.Now,
                         AddedBy=1,
                         IsMigrationData=true
-                    });          
+                    },
+                    new UserRole
+                    {
+                        UserRoleId = 3,
+                        RoleName = "Buyer",
+                        MenuGroupId = 3,
+                        IsActive = true,
+                        DateAdded = DateTime.Now,
+                        AddedBy = 1,
+                        IsMigrationData = true
+                    },
+                    new UserRole
+                    {
+                        UserRoleId = 4,
+                        RoleName = "Seller",
+                        MenuGroupId = 4,
+                        IsActive = true,
+                        DateAdded = DateTime.Now,
+                        AddedBy = 1,
+                        IsMigrationData = true
+                    }
+
+
+                    );          
             });
 
+
+            modelBuilder.Entity<Category>(k => {
+                k.HasKey(e => e.CategoryId);
+                k.Property(k => k.CategoryId).HasIdentityOptions(startValue: 2);
+                k.HasData(
+                    new Category
+                    {
+                       
+                        CategoryId = 1,
+                        CategoryName = "Restaurant",
+                        Order = 100,
+                        IsDeleted = false,
+                        Icon = "/images/restaurant.png",
+                        Parent = null,
+                        IsActive = true,
+                        CreatedBy = 1,
+                        CreatedOn = DateTime.Now,
+                      
+                       
+                      
+                    });
+            });
             modelBuilder.Entity<Users>(b=>{
                 b.HasKey(e=>e.UserId);  
                 b.Property(b=>b.UserId).HasIdentityOptions(startValue:3);              

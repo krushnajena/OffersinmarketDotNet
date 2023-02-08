@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AdminClient.Model.Store;
+using AdminClient.Model.Utility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +30,9 @@ namespace AdminClient
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(60);
             });
-            services.AddControllersWithViews();          
+            services.AddControllersWithViews();
+            services.AddScoped<IHttpWebClients, HttpWebClients>();
+            services.AddScoped<IStore, StoreProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
