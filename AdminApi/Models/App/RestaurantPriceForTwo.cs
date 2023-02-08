@@ -7,6 +7,7 @@ namespace AdminApi.Models.App
         public int RestaurantPriceForTwoId { get; set; }    
         public int StoreId { get; set; }
         public double? Price { get; set; }
+        public string About { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }

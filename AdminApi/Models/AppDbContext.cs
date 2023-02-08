@@ -1,4 +1,4 @@
-﻿using AdminApi.Models.Helper;
+﻿ using AdminApi.Models.Helper;
 using AdminApi.Models.Menu;
 using AdminApi.Models.User;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +43,10 @@ namespace AdminApi.Models
         public virtual DbSet<StoreRatting> StoreRattings { get; set; }
         public virtual DbSet<Follower> Followers { get; set; }
 
+        public virtual DbSet<RestaurantImage> RestaurantImages { get; set; }
+
+
+        public virtual DbSet<Story> Stories { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {   
 
@@ -144,6 +148,26 @@ namespace AdminApi.Models
             modelBuilder.Entity<Store>()
                .HasMany(c => c.StoreRattings)
                .WithOne(e => e.Store).IsRequired(false);
+
+
+            modelBuilder.Entity<RestaurantImage>()
+     .Property(s => s.CreatedOn)
+     .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<RestaurantImage>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+            modelBuilder.Entity<Story>()
+   .Property(s => s.CreatedOn)
+   .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<Story>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
 
             #endregion
         }

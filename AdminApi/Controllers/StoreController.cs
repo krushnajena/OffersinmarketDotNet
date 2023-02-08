@@ -201,12 +201,15 @@ namespace AdminApi.Controllers
         public IActionResult GetStores()
         {
           var a=  _context.Stores
-                        .Include(s => s.StoreRattings.Where(p => p.IsDeleted == false))
+                        .Include(s => s.StoreRattings.Where(post => post.IsDeleted == false))
+                        .Where(p => p.IsDeleted == false)
 
                         .ToList();
 
             return Ok(a);
 
         }
+
+       
     }
 }

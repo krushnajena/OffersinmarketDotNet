@@ -27,7 +27,7 @@ namespace AdminClient.Model.Store
             try
             {
                 StoreViewModel objupdateResults = new StoreViewModel();
-                objupdateResults = JsonConvert.DeserializeObject<StoreViewModel>(_objIHttpWebClients.PostRequest("Store/CreateStore", JsonConvert.SerializeObject(storeNewDTO), true));
+                objupdateResults = JsonConvert.DeserializeObject<StoreViewModel>(_objIHttpWebClients.PostRequest("api/Store/CreateStore", JsonConvert.SerializeObject(storeNewDTO), true));
                 return objupdateResults;
             }
             catch (Exception ex)
