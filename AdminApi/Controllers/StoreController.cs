@@ -227,6 +227,32 @@ namespace AdminApi.Controllers
                              CityId = p.CityId,
 
                              AreaId = p.AreaId,
+                             IsSundayOpen=p.IsSundayOpen,
+                             SundayOpenTime = p.SundayOpenTime,
+                             SundayCloseTime = p.SundayCloseTime,
+                             IsMondayOpen = p.IsMondayOpen,
+                             MondayOpenTime = p.MondayOpenTime,
+                             MondayCloseTime = p.MondayCloseTime,
+                             IsTuesdayOpen = p.IsTuesdayOpen,
+                             TuesdayOpenTime = p.TuesdayOpenTime,
+                             TuesdayCloseTime = p.TuesdayCloseTime,
+                             IsWednessdayOpen = p.IsWednessdayOpen,
+                             WednessdayOpenTime = p.WednessdayOpenTime,
+                             WednessdayCloseTime = p.WednessdayCloseTime,
+
+                             IsThursdayOpen = p.IsThursdayOpen,
+                             ThursdayOpenTime = p.ThursdayOpenTime,
+                             ThursdayCloseTime = p.ThursdayCloseTime,
+
+                             IsFridayOpen = p.IsFridayOpen,
+                             FridayOpenTime = p.FridayOpenTime,
+
+                             FridayCloseTime = p.FridayCloseTime,
+                             IsSaturdayOpen = p.IsSaturdayOpen,
+
+                             SaturdayOpenTime = p.SaturdayOpenTime,
+                             SaturdayCloseTime = p.SaturdayCloseTime,
+                             RefferedBy = p.RefferedBy,
                              Rattings = p.StoreRattings.Where(c => c.IsDeleted == false)
                          })
 

@@ -47,6 +47,11 @@ namespace AdminApi.Models
 
 
         public virtual DbSet<Story> Stories { get; set; }
+
+
+        public virtual DbSet<RestaurantPriceForTwo> RestaurantPriceForTwos { get; set; }
+
+        public virtual DbSet<RestaurantCuisine> RestaurantCuisines { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {   
 
@@ -164,6 +169,27 @@ namespace AdminApi.Models
    .HasDefaultValue(System.DateTime.Now);
 
             modelBuilder.Entity<Story>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+
+            modelBuilder.Entity<RestaurantPriceForTwo>()
+   .Property(s => s.CreatedOn)
+   .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<RestaurantPriceForTwo>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+            modelBuilder.Entity<RestaurantCuisine>()
+   .Property(s => s.CreatedOn)
+   .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<RestaurantCuisine>()
              .Property(s => s.IsDeleted)
              .HasDefaultValue(false)
              .ValueGeneratedNever();
