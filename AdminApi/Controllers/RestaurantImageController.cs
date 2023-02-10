@@ -140,7 +140,7 @@ namespace AdminApi.Controllers
             try
             {
                 var objState = _context.RestaurantImages.SingleOrDefault(opt => opt.RestaurantImageId == RestaurantImageId);
-                objState.IsDeleted = false;
+                objState.IsDeleted = true;
                 objState.UpdatedBy = CreatedBy;
                 objState.UpdatedOn = System.DateTime.Now; ;
                 _context.SaveChanges();
