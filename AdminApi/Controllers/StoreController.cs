@@ -201,8 +201,34 @@ namespace AdminApi.Controllers
         public IActionResult GetStores()
         {
           var a=  _context.Stores
-                        .Include(s => s.StoreRattings.Where(post => post.IsDeleted == false))
+                        .Include(s => s.StoreRattings)
                         .Where(p => p.IsDeleted == false)
+                         .Select(p => new
+                         {
+                             StoreId = p.StoreId,
+                             StoreName = p.StoreName,
+
+                             StoreCode = p.StoreCode,
+                             UserId = p.UserId,
+
+                             CategoryId = p.CategoryId,
+                             OwnerName = p.OwnerName,
+
+                             BusineessContactInfo = p.BusineessContactInfo,
+                             BusinessLogo = p.BusinessLogo,
+
+                             Lat = p.Lat,
+                             Long = p.Long,
+
+                             Address = p.Address,
+                             Landmark = p.Landmark,
+
+                             StateId = p.StateId,
+                             CityId = p.CityId,
+
+                             AreaId = p.AreaId,
+                             Rattings = p.StoreRattings.Where(c => c.IsDeleted == false)
+                         })
 
                         .ToList();
 
