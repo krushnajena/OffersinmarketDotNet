@@ -47,10 +47,10 @@ namespace AdminApi.Controllers
             if (objCheck == null)
             {
                 RestaurantPriceForTwo restaurantPriceForTwo = new RestaurantPriceForTwo();
-                restaurantPriceForTwo.StoreId = restaurantPriceForTwo.StoreId;
-                restaurantPriceForTwo.Price = restaurantPriceForTwo.Price;
-                restaurantPriceForTwo.About = restaurantPriceForTwo.About;
-                restaurantPriceForTwo.CreatedBy = restaurantPriceForTwo.CreatedBy;
+                restaurantPriceForTwo.StoreId = restaurantPriceForTwoDTO.StoreId;
+                restaurantPriceForTwo.Price = restaurantPriceForTwoDTO.Price;
+                restaurantPriceForTwo.About = restaurantPriceForTwoDTO.About;
+                restaurantPriceForTwo.CreatedBy = restaurantPriceForTwoDTO.CreatedBy;
                 var obj = _priceForTwoRepo.Insert(restaurantPriceForTwo);
                 return Ok(obj);
             }
