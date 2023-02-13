@@ -828,13 +828,14 @@
 }
 
 @media (min-width: 992px){
-	.header-desktop{
+	.header-desktop {
 		display: block;
 		position: absolute;
 		width: 150px;
-		height: 40px;
+		height: 56px;
 		background-repeat: no-repeat;
-		margin-top: -5px;
+		margin-top: -9px;
+		margin-left: 52px;
 	}
 	.color-headerlogo .header-mobile{
 		display:none;

@@ -1,0 +1,93 @@
+﻿@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http
+@inject IConfiguration Configuration;
+
+@{
+    ViewBag.Title = "ResturantImage";
+    string apiUrl = Configuration.GetValue<string>("WebAPIBaseUrl");
+}
+
+<div class="page-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#"><i class="fe fe-file-text mr-1"></i> Admin Console</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Resturant Image</li>
+    </ol>
+    <div class="ml-auto">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+
+        <form action="#" role="form" class="card validate" id="formPost" enctype="multipart/form-data">
+            <div class="card-header">
+                <h3 class="card-title">Resturant Image</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="imageTable" class="table table-striped table-bordered nowrap dataTable no-footer dtr-inline" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Image Type</th>
+                                <th>Text</th>
+                                <th>Store Name</th>
+                                <th>Store Code</th>
+                                <th>Contact Info</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@section scripts{
+    <script>
+        loadImage()
+        function loadImage() {
+            var table = $('#imageTable').DataTable();
+            table.destroy();
+
+            table = $('#imageTable').dataTable({
+                "searching": true,
+                "paging": true,
+                "sort": true,
+                "info": true,
+                "ajax": {
+                    "url": '@apiUrl/api/RestaurantImage/GetAllResturentImagesList',
+                    "type": "GET",
+                    "dataType": "json",
+                    "headers": {
+                        "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    },
+                    "error": function (data) {
+                        if (data.status == 401) {
+                            window.location.replace('/Message/TokenExpire');
+                        } else if (data.status == 403) {
+                            window.location.replace('/Message/Unauthorize');
+                        }
+                    }
+                },
+                "order": [],
+                "columns": [
+                    {
+                        "render": function (data, type, row) {
+                            if (row.image === '')
+                                return '';
+                            else
+                                return '<img style="margin-left: 28px;" class="avatar avatar-md rounded-circle" src="' + row.image + '"/>'
+                        }
+                    },
+                    { "data": "imageType", "orderable": true },
+                    { "data": "text", "orderable": true },
+                    { "data": "storeName", "orderable": true },
+                    { "data": "storeCode", "orderable": true },
+                    { "data": "busineessContactInfo", "orderable": true },
+                    { "data": "address", "orderable": true },
+                ]
+            });
+        }
+    </script>
+}

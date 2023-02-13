@@ -58,5 +58,13 @@ namespace AdminClient.Controllers
 
             return filename;
         }
+        public IActionResult ResturantImageApprove()
+        {
+            return View();
+        }
+        public IActionResult ResturantImage()
+        {
+            return View();
+        }
     }
 }
