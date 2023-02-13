@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 
-namespace AdminApi.Models.App
+namespace AdminClient.ViewModels.App
 {
-    public class Store
+    public class StoreViewModel
     {
         public int StoreId { get; set; }
         public string StoreCode { get; set; }
@@ -16,7 +14,7 @@ namespace AdminApi.Models.App
         public string BusinessLogo { get; set; }
         public double? Lat { get; set; }
         public double? Long { get; set; }
-        public string Address { get; set; } 
+        public string Address { get; set; }
         public string Landmark { get; set; }
         public int StateId { get; set; }
         public int CityId { get; set; }
@@ -62,12 +60,5 @@ namespace AdminApi.Models.App
         public DateTime? UpdatedOn { get; set; }
         public bool IsDeleted { get; set; }
 
-
-        public ICollection<StoreRatting> StoreRattings { get; set; }
-        public ICollection<Follower> Followers { get; set; }
-        public ICollection<RestaurantImage> RestaurantImages { get; set; }
-        public ICollection<RestaurantCuisine> RestaurantCuisines{ get; set; }
-
-        public ICollection<RestaurantPriceForTwo> RestaurantPriceForTwos { get; set; }
     }
 }
