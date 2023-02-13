@@ -9,7 +9,7 @@ namespace AdminApi.DTO.App
     {
         public int StoreId { get; set; }
         public int CreatedBy { get; set; }
-        public List<ResturentCu> resturentCus { get; set; }
+        public List<int> resturentCus { get; set; }
     }
     public class ResturentCu
     {

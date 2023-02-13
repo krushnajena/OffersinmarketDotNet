@@ -59,7 +59,7 @@ namespace AdminApi.Controllers
             for(int i = 0; i < list.Count; i++)
             {
                 var objState = _context.RestaurantCuisines.SingleOrDefault(opt => opt.RestaurantCuisineId == list[i].RestaurantCuisineId);
-                objState.IsDeleted = false;
+                objState.IsDeleted = true;
                 objState.UpdatedBy = resturentCuisineDTO.CreatedBy;
                 objState.UpdatedOn = System.DateTime.Now; ;
                 _context.SaveChanges();
@@ -68,7 +68,7 @@ namespace AdminApi.Controllers
             {
                 RestaurantCuisine restaurant = new RestaurantCuisine();
                 restaurant.StoreId = resturentCuisineDTO.StoreId;
-                restaurant.CusineId = resturentCuisineDTO.resturentCus[i].CusineId;
+                restaurant.CusineId = resturentCuisineDTO.resturentCus[i];
                 restaurant.CreatedBy = resturentCuisineDTO.CreatedBy;
                 _cusineRepo.Insert(restaurant);
             }

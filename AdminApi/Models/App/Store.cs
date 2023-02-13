@@ -65,5 +65,9 @@ namespace AdminApi.Models.App
 
         public ICollection<StoreRatting> StoreRattings { get; set; }
         public ICollection<Follower> Followers { get; set; }
+        public ICollection<RestaurantImage> RestaurantImages { get; set; }
+        public ICollection<RestaurantCuisine> RestaurantCuisines{ get; set; }
+
+        public ICollection<RestaurantPriceForTwo> RestaurantPriceForTwos { get; set; }
     }
 }
