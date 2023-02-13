@@ -24,6 +24,7 @@ namespace AdminClient.Controllers
             
             _store = storeP;
         }
+
         [HttpPost]
         public IActionResult StoreCreate(StoreDTO storeDTO)
         {
