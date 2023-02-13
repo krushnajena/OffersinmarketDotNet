@@ -96,6 +96,30 @@ namespace AdminApi.Controllers
                 return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
             }
         }
+        [HttpGet]
+        public IActionResult GetStatesList()
+        {
+            try
+            {
+                var list = (from u in _context.States
+                            select new
+                            {
+                                u.StateId,
+                                u.StateName,
+                                u.IsDeleted
+
+                            }
+
+
+                            ).Where(x => x.IsDeleted == false).ToList();
+                int totalRecords = list.Count();
+                return Ok(new { data = list, recordsTotal = totalRecords, recordsFiltered = totalRecords });
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
 
 
         [HttpGet("{id}")]
@@ -135,17 +159,17 @@ namespace AdminApi.Controllers
 
 
         [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public ActionResult DeleteState(StateUpdateDTO stateUpdateDTO)
+        [HttpGet("{stateid}/{DeletedBy}")]
+        public ActionResult DeleteState(int stateid, int DeletedBy)
         {
             try
             {
-                var objState = _context.States.SingleOrDefault(opt => opt.StateId == stateUpdateDTO.StateId);
-                objState.IsDeleted = false;
-                objState.UpdatedBy = stateUpdateDTO.CreatedBy;
-                objState.UpdatedOn = System.DateTime.Now; ;
+                var State = _context.States.SingleOrDefault(opt => opt.StateId == stateid);
+                State.IsDeleted = true;
+                State.UpdatedBy = DeletedBy;
+                State.UpdatedOn = System.DateTime.Now;
                 _context.SaveChanges();
-                return Ok(objState);
+                return Ok(State);
             }
             catch (Exception ex)
             {

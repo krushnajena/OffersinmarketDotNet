@@ -101,6 +101,35 @@ namespace AdminApi.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult GetCitiesList()
+        {
+            try
+            {
+                var list = (from u in _context.Cities
+                            join r in _context.States on u.StateId equals r.StateId
+                            select new
+                            {
+                                u.StateId,
+                                r.StateName,
+                                u.CityId,
+                                u.CityName,
+                                u.IsDeleted
+
+                            }
+
+
+                            ).Where(x => x.IsDeleted == false).ToList();
+
+                int totalRecords = list.Count();
+                return Ok(new { data = list, recordsTotal = totalRecords, recordsFiltered = totalRecords });
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
+
 
         [HttpGet("{StateId}")]
         public IActionResult GetCityListByStateId(int StateId)
@@ -175,17 +204,17 @@ namespace AdminApi.Controllers
 
 
         [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public ActionResult DeleteCity(CityUpdateDTO cityUpdateDTO)
+        [HttpGet("{cityid}/{DeletedBy}")]
+        public ActionResult DeleteCity(int cityid, int DeletedBy)
         {
             try
             {
-                var objState = _context.Cities.SingleOrDefault(opt => opt.CityId == cityUpdateDTO.CityId);
-                objState.IsDeleted = false;
-                objState.UpdatedBy = cityUpdateDTO.CreatedBy;
-                objState.UpdatedOn = System.DateTime.Now; ;
+                var city = _context.Cities.SingleOrDefault(opt => opt.CityId == cityid);
+                city.IsDeleted = true;
+                city.UpdatedBy = DeletedBy;
+                city.UpdatedOn = System.DateTime.Now;
                 _context.SaveChanges();
-                return Ok(objState);
+                return Ok(city);
             }
             catch (Exception ex)
             {

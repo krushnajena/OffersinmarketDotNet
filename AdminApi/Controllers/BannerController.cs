@@ -55,5 +55,26 @@ namespace AdminApi.Controllers
             return Ok(obj);
 
         }
+        [HttpGet("{bannerType}")]
+        public IActionResult GetBannersByBannerType(string bannerType)
+        {
+            var banner = (from u in _context.Banners
+                          select new
+                          {
+                              u.BannerType,
+                              u.OnClickType,
+                              u.OnClickId,
+                              u.Image,
+                              u.BannerId,
+                              u.CreatedBy,
+                             
+                              u.IsDeleted
+
+                          }
+
+
+                          ).Where(x => x.IsDeleted == false && x.BannerType == bannerType).ToList();
+            return Ok(banner);
+        }
     }
 }

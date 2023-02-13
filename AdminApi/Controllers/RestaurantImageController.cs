@@ -134,13 +134,95 @@ namespace AdminApi.Controllers
             }
         }
 
+
+        [HttpGet("{StoreId}")]
+        public IActionResult GetResturentImagesBuyerSide(int StoreId)
+        {
+            try
+            {
+                var banner = (from u in _context.RestaurantImages
+                              select new
+                              {
+                                  u.RestaurantImageId,
+                                  u.StoreId,
+                                  u.Image,
+                                  u.ImageType,
+                                  u.Text,
+                                  u.CreatedBy,
+                                  u.IsActive,
+                                  u.IsDeleted
+
+                              }
+
+
+                            ).Where(x => x.IsDeleted == false && x.StoreId == StoreId && x.ImageType == "Banner" && x.IsActive == true).ToList();
+
+                var menu = (from u in _context.RestaurantImages
+                            select new
+                            {
+                                u.RestaurantImageId,
+                                u.StoreId,
+                                u.Image,
+                                u.ImageType,
+                                u.Text,
+                                u.CreatedBy,
+                                u.IsActive,
+                                u.IsDeleted
+
+                            }
+
+
+                            ).Where(x => x.IsDeleted == false && x.StoreId == StoreId && x.ImageType == "Menu" && x.IsActive == true).ToList();
+
+                var ambiance = (from u in _context.RestaurantImages
+                                select new
+                                {
+                                    u.RestaurantImageId,
+                                    u.StoreId,
+                                    u.Image,
+                                    u.ImageType,
+                                    u.Text,
+                                    u.CreatedBy,
+                                    u.IsActive,
+                                    u.IsDeleted
+
+                                }
+
+
+                           ).Where(x => x.IsDeleted == false && x.StoreId == StoreId && x.ImageType == "Ambience" && x.IsActive == true).ToList();
+
+                var food = (from u in _context.RestaurantImages
+                            select new
+                            {
+                                u.RestaurantImageId,
+                                u.StoreId,
+                                u.Image,
+                                u.ImageType,
+                                u.Text,
+                                u.CreatedBy,
+                                u.IsActive,
+                                u.IsDeleted
+
+                            }
+
+
+                          ).Where(x => x.IsDeleted == false && x.StoreId == StoreId && x.ImageType == "Food" && x.IsActive == true).ToList();
+
+                return Ok(new { banner = banner, food = food, ambiance = ambiance, menu = menu });
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
+
         [HttpGet("{RestaurantImageId}/{CreatedBy}")]
         public IActionResult DeleteResturentImages(int RestaurantImageId,int CreatedBy)
         {
             try
             {
                 var objState = _context.RestaurantImages.SingleOrDefault(opt => opt.RestaurantImageId == RestaurantImageId);
-                objState.IsDeleted = false;
+                objState.IsDeleted = true;
                 objState.UpdatedBy = CreatedBy;
                 objState.UpdatedOn = System.DateTime.Now; ;
                 _context.SaveChanges();

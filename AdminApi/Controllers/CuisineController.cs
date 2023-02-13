@@ -99,6 +99,31 @@ namespace AdminApi.Controllers
                 return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
             }
         }
+        [HttpGet]
+        public IActionResult GetCuisinesList()
+        {
+            try
+            {
+                var list = (from u in _context.Cuisines
+                            select new
+                            {
+                                u.CuisineName,
+                                u.CuisineId,
+                                u.IsDeleted
+
+                            }
+
+
+                            ).Where(x => x.IsDeleted == false).ToList();
+
+                int totalRecords = list.Count();
+                return Ok(new { data = list, recordsTotal = totalRecords, recordsFiltered = totalRecords });
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
 
 
         [HttpGet("{id}")]
@@ -138,17 +163,17 @@ namespace AdminApi.Controllers
 
 
         [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public ActionResult DeleteCuisine(CusineUpdateDTO cusineUpdateDTO)
+        [HttpGet("{cuisineid}/{DeletedBy}")]
+        public ActionResult DeleteCuisine(int cuisineid, int DeletedBy)
         {
             try
             {
-                var objState = _context.Cuisines.SingleOrDefault(opt => opt.CuisineId == cusineUpdateDTO.CuisineId);
-                objState.IsDeleted = false;
-                objState.UpdatedBy = cusineUpdateDTO.CreatedBy;
-                objState.UpdatedOn = System.DateTime.Now; ;
+                var Cuisine = _context.Cuisines.SingleOrDefault(opt => opt.CuisineId == cuisineid);
+                Cuisine.IsDeleted = true;
+                Cuisine.UpdatedBy = DeletedBy;
+                Cuisine.UpdatedOn = System.DateTime.Now;
                 _context.SaveChanges();
-                return Ok(objState);
+                return Ok(Cuisine);
             }
             catch (Exception ex)
             {

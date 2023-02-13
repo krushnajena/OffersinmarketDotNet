@@ -47,6 +47,11 @@ namespace AdminApi.Models
 
 
         public virtual DbSet<Story> Stories { get; set; }
+
+
+        public virtual DbSet<RestaurantPriceForTwo> RestaurantPriceForTwos { get; set; }
+
+        public virtual DbSet<RestaurantCuisine> RestaurantCuisines { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {   
 
@@ -150,6 +155,10 @@ namespace AdminApi.Models
                .WithOne(e => e.Store).IsRequired(false);
 
 
+            modelBuilder.Entity<Store>()
+             .HasMany(c => c.Followers)
+             .WithOne(e => e.Store).IsRequired(false);
+
             modelBuilder.Entity<RestaurantImage>()
      .Property(s => s.CreatedOn)
      .HasDefaultValue(System.DateTime.Now);
@@ -158,6 +167,11 @@ namespace AdminApi.Models
              .Property(s => s.IsDeleted)
              .HasDefaultValue(false)
              .ValueGeneratedNever();
+
+
+            modelBuilder.Entity<Store>()
+          .HasMany(c => c.RestaurantImages)
+          .WithOne(e => e.Store).IsRequired(false);
 
             modelBuilder.Entity<Story>()
    .Property(s => s.CreatedOn)
@@ -168,6 +182,36 @@ namespace AdminApi.Models
              .HasDefaultValue(false)
              .ValueGeneratedNever();
 
+
+
+            modelBuilder.Entity<RestaurantPriceForTwo>()
+   .Property(s => s.CreatedOn)
+   .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<RestaurantPriceForTwo>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+            modelBuilder.Entity<RestaurantCuisine>()
+   .Property(s => s.CreatedOn)
+   .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<RestaurantCuisine>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+            modelBuilder.Entity<Store>()
+        .HasMany(c => c.RestaurantCuisines)
+        .WithOne(e => e.Store).IsRequired(false);
+
+
+            modelBuilder.Entity<Store>()
+     .HasMany(c => c.RestaurantPriceForTwos)
+     .WithOne(e => e.Store).IsRequired(false);
 
             #endregion
         }
