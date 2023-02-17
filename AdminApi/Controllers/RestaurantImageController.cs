@@ -234,5 +234,114 @@ namespace AdminApi.Controllers
             }
         }
 
+
+        [HttpGet]
+        public IActionResult GetResturentImagesListForApproval()
+        {
+            try
+            {
+                var list = (from u in _context.RestaurantImages
+                            join r in _context.Stores on u.StoreId equals r.StoreId
+                            select new
+                            {
+                                u.RestaurantImageId,
+                                u.ImageType,
+                                u.Image,
+
+                                u.Text,
+                                u.IsActive,
+                                u.IsDeleted,
+                                r.StoreName, r.StoreId,r.StoreCode,r.BusineessContactInfo,r.Address
+
+                            }
+
+
+                            ).Where(x => x.IsDeleted == false && x.IsActive == false).ToList();
+
+                int totalRecords = list.Count();
+                return Ok(new { data = list, recordsTotal = totalRecords, recordsFiltered = totalRecords });
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
+
+
+        [HttpGet]
+        public IActionResult GetAllResturentImagesList()
+        {
+            try
+            {
+                var list = (from u in _context.RestaurantImages
+                            join r in _context.Stores on u.StoreId equals r.StoreId
+                            select new
+                            {
+                                u.RestaurantImageId,
+                                u.ImageType,
+                                u.Image,
+
+                                u.Text,
+                                u.IsActive,
+                                u.IsDeleted,
+                                r.StoreName,
+                                r.StoreId,
+                                r.StoreCode,
+                                r.BusineessContactInfo,
+                                r.Address
+
+                            }
+
+
+                            ).Where(x => x.IsDeleted == false ).ToList();
+
+                int totalRecords = list.Count();
+                return Ok(new { data = list, recordsTotal = totalRecords, recordsFiltered = totalRecords });
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("{ImageId}/{ApprovedBy}")]
+        public IActionResult ApproveImage(int ImageId,int ApprovedBy)
+        {
+            try
+            {
+                var Cuisine = _context.RestaurantImages.SingleOrDefault(opt => opt.RestaurantImageId == ImageId);
+                Cuisine.IsActive = true;
+                Cuisine.UpdatedBy = ApprovedBy;
+                Cuisine.UpdatedOn = System.DateTime.Now;
+                _context.SaveChanges();
+                return Ok(Cuisine);
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("{ImageId}/{ApprovedBy}")]
+        public IActionResult DeleteImage(int ImageId, int ApprovedBy)
+        {
+            try
+            {
+                var Cuisine = _context.RestaurantImages.SingleOrDefault(opt => opt.RestaurantImageId == ImageId);
+                Cuisine.IsDeleted = true;
+                Cuisine.UpdatedBy = ApprovedBy;
+                Cuisine.UpdatedOn = System.DateTime.Now;
+                _context.SaveChanges();
+                return Ok(Cuisine);
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
+
     }
 }

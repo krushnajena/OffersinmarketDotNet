@@ -63,7 +63,7 @@ namespace AdminApi
             {
                 options.AddPolicy(name:AllowSpecificOrigins,builder=>
                     {
-                        builder.WithOrigins("http://localhost:53580","http://localhost:5000")
+                        builder.WithOrigins("http://localhost:53580","http://localhost:5000", "http://newinsider.offersinmarket.com")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                     });
