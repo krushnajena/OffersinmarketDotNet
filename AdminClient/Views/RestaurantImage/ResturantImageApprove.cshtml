@@ -1,0 +1,192 @@
+﻿@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http
+@inject IConfiguration Configuration;
+
+@{
+    ViewBag.Title = "ResturantImageApprove";
+    string apiUrl = Configuration.GetValue<string>("WebAPIBaseUrl");
+}
+
+<div class="page-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#"><i class="fe fe-file-text mr-1"></i> Admin Console</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Resturant Image Approve</li>
+    </ol>
+    <div class="ml-auto">
+        
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+
+        <form action="#" role="form" class="card validate" id="formPost" enctype="multipart/form-data">
+            <div class="card-header">
+                <h3 class="card-title">Resturant Image Approve</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="imageapproveTable" class="table table-striped table-bordered nowrap dataTable no-footer dtr-inline" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Image Type</th>
+                                <th>Text</th>
+                                <th>Store Name</th>
+                                <th>Store Code</th>
+                                <th>Contact Info</th>
+                                <th>Address</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@section scripts{
+    <script>
+        loadImageApprove()
+        function loadImageApprove() {
+            var table = $('#imageapproveTable').DataTable();
+            table.destroy();
+
+            table = $('#imageapproveTable').dataTable({
+                "searching": true,
+                "paging": true,
+                "sort": true,
+                "info": true,
+                "ajax": {
+                    "url": '@apiUrl/api/RestaurantImage/GetResturentImagesListForApproval',
+                    "type": "GET",
+                    "dataType": "json",
+                    "headers": {
+                        "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    },
+                    "error": function (data) {
+                        if (data.status == 401) {
+                            window.location.replace('/Message/TokenExpire');
+                        } else if (data.status == 403) {
+                            window.location.replace('/Message/Unauthorize');
+                        }
+                    }
+                },
+                "order": [],
+                "columns": [
+                    {
+                        "render": function (data, type, row) {
+                            if (row.image === '')
+                                return '';
+                            else
+                                return '<img style="margin-left: 28px;" class="avatar avatar-md rounded-circle" src="' + row.image + '"/>'
+                        }
+                    },
+                    { "data": "imageType", "orderable": true },
+                    { "data": "text", "orderable": true },
+                    { "data": "storeName", "orderable": true },
+                    { "data": "storeCode", "orderable": true },
+                    { "data": "busineessContactInfo", "orderable": true },
+                    { "data": "address", "orderable": true },
+                    {
+                        "render": function (data, type, row) {
+                            return '<button class="btn btn-success" data-target="#approve" data-id=' + row.restaurantImageId + ' data-title="Delete"><i class="fe fe-check mr-2"></i>Approve</button>' + '&nbsp&nbsp<button class="btn btn-icon  btn-danger" data-target="#delete" data-id=' + row.restaurantImageId + ' data-title="Delete"><i class="fa fa-trash"></i></button>';
+
+                        }
+                    }
+                ]
+            });
+        }
+
+        $('#imageapproveTable tbody').on('click', 'button[data-target="#delete"]', function () {
+            var id = $(this).data('id');
+            swal({
+                html: true,
+                title: "Are you sure?",
+                text: "You will not be able to recover this data!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, confirm it!",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    type: "GET",
+                    url: "@apiUrl/api/RestaurantImage/DeleteImage/" + id + "/" + @Context.Session.GetInt32("UserId"),
+                    contentType: "application/json; charset=utf-8",
+                    headers: {
+                        "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    },
+                    dataType: "json",
+                    success: function (data, statusText, xhr) {
+                        if (xhr.status == 200) {
+                            $('#imageapproveTable').DataTable().ajax.reload(null, false);
+                            sweetAlert({
+                                html: true,
+                                title: "Image",
+                                text: "Successfully deleted!",
+                                type: "success"
+                            });
+                        } else if (xhr.status == 202) {
+                            sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                        } else {
+                            sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                        }
+                    },
+                    error: function (data) {
+                        if (data.status == 401) {
+                            window.location.replace('/Message/TokenExpire');
+                        } else if (data.status == 403) {
+                            window.location.replace('/Message/Unauthorize');
+                        }
+                    }
+                });
+            });
+        });
+
+        $('#imageapproveTable tbody').on('click', 'button[data-target="#approve"]', function () {
+            var id = $(this).data('id');
+            swal({
+                html: true,
+                title: "Are you sure?",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, confirm it!",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    type: "GET",
+                    url: "@apiUrl/api/RestaurantImage/ApproveImage/" + id + "/" + @Context.Session.GetInt32("UserId"),
+                    contentType: "application/json; charset=utf-8",
+                    headers: {
+                        "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    },
+                    dataType: "json",
+                    success: function (data, statusText, xhr) {
+                        if (xhr.status == 200) {
+                            $('#imageapproveTable').DataTable().ajax.reload(null, false);
+                            sweetAlert({
+                                html: true,
+                                title: "Image",
+                                text: "Successfully Approve!",
+                                type: "success"
+                            });
+                        } else if (xhr.status == 202) {
+                            sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                        } else {
+                            sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                        }
+                    },
+                    error: function (data) {
+                        if (data.status == 401) {
+                            window.location.replace('/Message/TokenExpire');
+                        } else if (data.status == 403) {
+                            window.location.replace('/Message/Unauthorize');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

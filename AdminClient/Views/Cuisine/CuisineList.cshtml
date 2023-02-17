@@ -1,0 +1,134 @@
+﻿@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http
+@inject IConfiguration Configuration;
+
+@{
+    ViewBag.Title = "CuisineList";
+    string apiUrl = Configuration.GetValue<string>("WebAPIBaseUrl");
+}
+
+<div class="page-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#"><i class="fe fe-file-text mr-1"></i> Admin Console</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Cuisine List</li>
+    </ol>
+    <div class="ml-auto">
+        <a href="~/Cuisine/CuisineCreate" class="btn btn-primary btn-icon btn-sm text-white mr-2">
+            <span>
+                <i class="fe fe-plus"></i>
+            </span> Cuisine Create
+        </a>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+
+        <form action="#" role="form" class="card validate" id="formPost" enctype="multipart/form-data">
+            <div class="card-header">
+                <h3 class="card-title">Cuisine List</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="cuisineTable" class="table table-striped table-bordered nowrap dataTable no-footer dtr-inline" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Cuisine Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@section scripts{
+    <script>
+        loadCuisnei()
+        function loadCuisnei() {
+            var table = $('#cuisineTable').DataTable();
+            table.destroy();
+
+            table = $('#cuisineTable').dataTable({
+                "searching": true,
+                "paging": true,
+                "sort": true,
+                "info": true,
+                "ajax": {
+                    "url": '@apiUrl/api/Cuisine/GetCuisinesList',
+                    "type": "GET",
+                    "dataType": "json",
+                    "headers": {
+                        "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    },
+                    "error": function (data) {
+                        if (data.status == 401) {
+                            window.location.replace('/Message/TokenExpire');
+                        } else if (data.status == 403) {
+                            window.location.replace('/Message/Unauthorize');
+                        }
+                    }
+                },
+                "order": [],
+                "columns": [
+
+                    { "data": "cuisineName", "orderable": true },
+                    {
+                        "render": function (data, type, row) {
+                            return '<a class="btn btn-sm btn-primary" href="../Cuisine/CuisineEdit?cuisineId=' + row.cuisineId + '"><i class="fa fa-edit"></i></a>' + '&nbsp&nbsp<button class="btn btn-sm btn-danger" data-target="#delete" data-id=' + row.cuisineId + ' data-title="Delete"><i class="fa fa-trash"></i></button>';
+
+                        }
+                    }
+                ]
+            });
+        }
+
+        $('#cuisineTable tbody').on('click', 'button[data-target="#delete"]', function () {
+            var id = $(this).data('id');
+            swal({
+                html: true,
+                title: "Are you sure?",
+                text: "You will not be able to recover this data!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, confirm it!",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    type: "GET",
+                    url: "@apiUrl/api/Cuisine/DeleteCuisine/" + id + "/" + @Context.Session.GetInt32("UserId"),
+                    contentType: "application/json; charset=utf-8",
+                    headers: {
+                        "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    },
+                    dataType: "json",
+                    success: function (data, statusText, xhr) {
+                        if (xhr.status == 200) {
+                            $('#cuisineTable').DataTable().ajax.reload(null, false);
+                            sweetAlert({
+                                html: true,
+                                title: "Cuisine",
+                                text: "Successfully deleted!",
+                                type: "success"
+                            });
+                        } else if (xhr.status == 202) {
+                            sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                        } else {
+                            sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                        }
+                    },
+                    error: function (data) {
+                        if (data.status == 401) {
+                            window.location.replace('/Message/TokenExpire');
+                        } else if (data.status == 403) {
+                            window.location.replace('/Message/Unauthorize');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

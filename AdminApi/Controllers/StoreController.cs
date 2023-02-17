@@ -262,6 +262,98 @@ namespace AdminApi.Controllers
 
         }
 
-       
+
+
+
+        [HttpGet("{StoreId}")]
+        public IActionResult GetResturentDetailsByStoreId(int StoreId)
+        {
+            var objStores = _context.Stores.Include(s => s.StoreRattings)
+                                            .Include(s => s.Followers)
+                                                .Include(s => s.RestaurantImages)
+                                                    .Include(s => s.RestaurantCuisines)
+                                                    .Include(s => s.RestaurantPriceForTwos)
+                        .Select(p => new
+                        {
+                            StoreId = p.StoreId,
+                            StoreName = p.StoreName,
+
+                            StoreCode = p.StoreCode,
+                            UserId = p.UserId,
+
+                            CategoryId = p.CategoryId,
+                            OwnerName = p.OwnerName,
+
+                            BusineessContactInfo = p.BusineessContactInfo,
+                            BusinessLogo = p.BusinessLogo,
+
+                            Lat = p.Lat,
+                            Long = p.Long,
+
+                            Address = p.Address,
+                            Landmark = p.Landmark,
+
+                            StateId = p.StateId,
+                            CityId = p.CityId,
+
+                            AreaId = p.AreaId,
+                            IsSundayOpen = p.IsSundayOpen,
+                            SundayOpenTime = p.SundayOpenTime,
+                            SundayCloseTime = p.SundayCloseTime,
+                            IsMondayOpen = p.IsMondayOpen,
+                            MondayOpenTime = p.MondayOpenTime,
+                            MondayCloseTime = p.MondayCloseTime,
+                            IsTuesdayOpen = p.IsTuesdayOpen,
+                            TuesdayOpenTime = p.TuesdayOpenTime,
+                            TuesdayCloseTime = p.TuesdayCloseTime,
+                            IsWednessdayOpen = p.IsWednessdayOpen,
+                            WednessdayOpenTime = p.WednessdayOpenTime,
+                            WednessdayCloseTime = p.WednessdayCloseTime,
+
+                            IsThursdayOpen = p.IsThursdayOpen,
+                            ThursdayOpenTime = p.ThursdayOpenTime,
+                            ThursdayCloseTime = p.ThursdayCloseTime,
+
+                            IsFridayOpen = p.IsFridayOpen,
+                            FridayOpenTime = p.FridayOpenTime,
+
+                            FridayCloseTime = p.FridayCloseTime,
+                            IsSaturdayOpen = p.IsSaturdayOpen,
+
+                            SaturdayOpenTime = p.SaturdayOpenTime,
+                            SaturdayCloseTime = p.SaturdayCloseTime,
+                            RefferedBy = p.RefferedBy,
+                            IsDeleted = p.IsDeleted,
+                            Rattings = p.StoreRattings.Where(c => c.IsDeleted == false),
+                            Ratting = p.StoreRattings.Where(c => c.IsDeleted == false).Average(l=>l.AppliedRatting),
+
+                            Followers = p.Followers.Where(c => c.IsDeleted == false),
+                            Cusines =( from h in p.RestaurantCuisines
+                             join l in _context.Cuisines on h.CusineId equals l.CuisineId
+                                       select new
+                                       {
+                                           h.CusineId,
+                                           l.CuisineName,
+                                           h.IsDeleted
+
+                                       }
+                             )
+                            .Where(c => c.IsDeleted == false),
+                            RestaurantPriceForTwo = p.RestaurantPriceForTwos.Where(c => c.IsDeleted == false),
+                            Banners = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Banner" && c.IsActive == true),
+                            Menu = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Menu" && c.IsActive == true),
+                            Ambience = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Ambience" && c.IsActive == true),
+                            Food = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Food" && c.IsActive == true),
+                        }).SingleOrDefault(opt => opt.StoreId == StoreId && opt.IsDeleted == false)
+
+                       
+
+
+            ;
+            return Ok(objStores);
+
+        }
+
+
     }
 }

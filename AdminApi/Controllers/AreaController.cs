@@ -105,6 +105,37 @@ namespace AdminApi.Controllers
                 return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
             }
         }
+        [HttpGet]
+        public IActionResult GetAreasList()
+        {
+            try
+            {
+                var list = (from u in _context.Areas
+                            join l in _context.Cities on u.CityId equals l.CityId
+                            join r in _context.States on l.StateId equals r.StateId
+                            select new
+                            {
+                                u.AreaName,
+                                u.AreaId,
+                                u.CityId,
+                                r.StateName,
+
+                                l.CityName,
+                                u.IsDeleted
+
+                            }
+
+
+                            ).Where(x => x.IsDeleted == false).ToList();
+
+                int totalRecords = list.Count();
+                return Ok(new { data = list, recordsTotal = totalRecords, recordsFiltered = totalRecords });
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
 
 
         [HttpGet("{CityId}")]
@@ -183,17 +214,17 @@ namespace AdminApi.Controllers
 
 
         [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public ActionResult DeleteArea(AreaUpdateDTO areaUpdateDTO)
+        [HttpGet("{areaid}/{DeletedBy}")]
+        public ActionResult DeleteArea(int areaid, int DeletedBy)
         {
             try
             {
-                var objState = _context.Areas.SingleOrDefault(opt => opt.AreaId == areaUpdateDTO.AreaId);
-                objState.IsDeleted = false;
-                objState.UpdatedBy = areaUpdateDTO.CreatedBy;
-                objState.UpdatedOn = System.DateTime.Now; ;
+                var Area = _context.Areas.SingleOrDefault(opt => opt.AreaId == areaid);
+                Area.IsDeleted = true;
+                Area.UpdatedBy = DeletedBy;
+                Area.UpdatedOn = System.DateTime.Now;
                 _context.SaveChanges();
-                return Ok(objState);
+                return Ok(Area);
             }
             catch (Exception ex)
             {

@@ -913,12 +913,12 @@ div.conv-form-wrapper div#messages div.message.from {
 }
 @media (max-width: 992px) and (min-width: 767px){
 	.header-desktop{
-		background: url(../../images/brand/logos/yatri-New.png);
+		background: url(../../images/brand/logos/oim-new.png);
 	}
 }
 @media (min-width: 992px){
 	.header-desktop{
-		background: url(../../images/brand/logos/yatri-New.png);
+		background: url(../../images/brand/logos/oim-new.png);
 	}
 }
 
