@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AdminClient.Model.Restaurant;
 using AdminClient.Model.Store;
+using AdminClient.Model.Story;
 using AdminClient.Model.Utility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,6 +36,8 @@ namespace AdminClient
             services.AddScoped<IHttpWebClients, HttpWebClients>();
             services.AddScoped<IStore, StoreProvider>();
             services.AddScoped<IRestaurantImage, RestaurantImageProvider>();
+
+            services.AddScoped<IStory, StoryProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
