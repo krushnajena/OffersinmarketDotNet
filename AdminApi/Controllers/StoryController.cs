@@ -53,7 +53,7 @@ namespace AdminApi.Controllers
             return Ok(a);
         }
 
-        [HttpGet("StoreId")]
+        [HttpGet("{StoreId}")]
         public IActionResult GetStoryListByStoreId(int StoreId)
         {
             try
@@ -68,13 +68,13 @@ namespace AdminApi.Controllers
                                 u.Image,
                                 u.CreatedBy,
                                 u.CreatedOn,
-
+                                VisibleTill = u.CreatedOn.AddHours(24),
                                 u.IsDeleted
 
                             }
 
 
-                            ).Where(x => x.IsDeleted == false && x.StoreId==StoreId && x.CreatedOn.AddDays(1)>System.DateTime.Now).ToList();
+                            ).Where(x => x.IsDeleted == false && x.StoreId==StoreId && x.VisibleTill > System.DateTime.Now ).ToList();
 
                 return Ok(list);
             }
@@ -91,7 +91,7 @@ namespace AdminApi.Controllers
             try
             {
                 var objState = _context.Stories.SingleOrDefault(opt => opt.StoryId == StoryId);
-                objState.IsDeleted = false;
+                objState.IsDeleted = true   ;
                 objState.UpdatedBy = CreatedBy;
                 objState.UpdatedOn = System.DateTime.Now; ;
                 _context.SaveChanges();
