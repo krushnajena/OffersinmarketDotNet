@@ -11,9 +11,12 @@ namespace AdminClient.Model.Store
     {
  
         IHttpWebClients _objIHttpWebClients;
+
         /// <summary>
         /// Constructor declaration
         /// </summary>
+        /// 
+       
         /// <param name="objKeyList"></param>
         /// <param name="objIHttpWebClients"></param>
         public StoreProvider( IHttpWebClients objIHttpWebClients)

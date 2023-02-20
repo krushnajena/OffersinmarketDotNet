@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AdminClient.Model.Product;
 using AdminClient.Model.Restaurant;
 using AdminClient.Model.Store;
 using AdminClient.Model.Story;
@@ -35,6 +36,7 @@ namespace AdminClient
             services.AddControllersWithViews();
             services.AddScoped<IHttpWebClients, HttpWebClients>();
             services.AddScoped<IStore, StoreProvider>();
+            services.AddScoped<IProduct, ProductProvider>();
             services.AddScoped<IRestaurantImage, RestaurantImageProvider>();
 
             services.AddScoped<IStory, StoryProvider>();
