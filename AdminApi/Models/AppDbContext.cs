@@ -58,6 +58,9 @@ namespace AdminApi.Models
         public virtual DbSet<ProductImage> ProductImages{ get; set; }
 
         public virtual DbSet<ProductSpecification> ProductSpecifications { get; set; }
+
+
+        public virtual DbSet<ViewCount> ViewCounts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {   
 
@@ -263,6 +266,18 @@ namespace AdminApi.Models
             modelBuilder.Entity<Store>()
 .HasMany(c => c.Products)
 .WithOne(e => e.Store).IsRequired(false);
+
+
+
+
+            modelBuilder.Entity<ViewCount>()
+.Property(s => s.CreatedOn)
+.HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<ViewCount>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
             #endregion
         }
 
