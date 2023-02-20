@@ -41,6 +41,7 @@ namespace AdminApi.Controllers
             Configuration = configuration;
         }
 
+        [HttpPost]
         public IActionResult AddViewCount(ViewCountDTO viewCountDTO)
         {
             ViewCount view = new ViewCount();
