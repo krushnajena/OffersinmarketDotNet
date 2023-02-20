@@ -52,6 +52,12 @@ namespace AdminApi.Models
         public virtual DbSet<RestaurantPriceForTwo> RestaurantPriceForTwos { get; set; }
 
         public virtual DbSet<RestaurantCuisine> RestaurantCuisines { get; set; }
+
+        public virtual DbSet<Product> Products { get; set; }
+
+        public virtual DbSet<ProductImage> ProductImages{ get; set; }
+
+        public virtual DbSet<ProductSpecification> ProductSpecifications { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {   
 
@@ -213,6 +219,50 @@ namespace AdminApi.Models
      .HasMany(c => c.RestaurantPriceForTwos)
      .WithOne(e => e.Store).IsRequired(false);
 
+
+
+            modelBuilder.Entity<Product>()
+  .Property(s => s.CreatedOn)
+  .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<Product>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+            modelBuilder.Entity<ProductImage>()
+  .Property(s => s.CreatedOn)
+  .HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<ProductImage>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+            modelBuilder.Entity<ProductSpecification>()
+.Property(s => s.CreatedOn)
+.HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<ProductSpecification>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+            modelBuilder.Entity<Product>()
+     .HasMany(c => c.ProductImages)
+     .WithOne(e => e.Product).IsRequired(false);
+
+            modelBuilder.Entity<Product>()
+  .HasMany(c => c.ProductSpecifications)
+  .WithOne(e => e.Product).IsRequired(false);
+
+
+            modelBuilder.Entity<Store>()
+.HasMany(c => c.Products)
+.WithOne(e => e.Store).IsRequired(false);
             #endregion
         }
 

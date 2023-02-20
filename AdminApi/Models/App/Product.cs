@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace AdminApi.Models.App
 {
@@ -24,6 +26,11 @@ namespace AdminApi.Models.App
         public bool IsDeleted { get; set; }
 
 
+        public ICollection<ProductImage> ProductImages { get; set; }
+        public ICollection<ProductSpecification> ProductSpecifications { get; set; }
+
+        [JsonIgnore]
+        public Store Store { get; set; }
 
     }
 }
