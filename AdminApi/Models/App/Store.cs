@@ -71,5 +71,7 @@ namespace AdminApi.Models.App
         public ICollection<RestaurantPriceForTwo> RestaurantPriceForTwos { get; set; }
 
         public ICollection<Product> Products { get; set; }
+
+        public ICollection<Story> Stories{ get; set; }
     }
 }

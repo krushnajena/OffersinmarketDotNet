@@ -268,6 +268,9 @@ namespace AdminApi.Models
 .WithOne(e => e.Store).IsRequired(false);
 
 
+            modelBuilder.Entity<Store>()
+.HasMany(c => c.Stories)
+.WithOne(e => e.Store).IsRequired(false);
 
 
             modelBuilder.Entity<ViewCount>()

@@ -104,5 +104,43 @@ namespace AdminApi.Controllers
         }
 
 
+        [HttpGet("{UserId}")]
+        public IActionResult GetMyFollowedStoryListByStoreId(int UserId)
+        {
+            try
+            {
+                var list =   _context.Followers
+                        
+                              .Select(p => new
+                              {       
+                                        p.IsDeleted,
+                                        p.UserId,
+                                        Stories = (from h in _context.Stories
+
+                                             select new
+                                             {
+                                                 h.StoryId,
+                                                 h.StoreId,
+                                                 h.Image,
+                                                 h.Text,
+
+                                                 h.CreatedBy,
+                                                 h.CreatedOn,
+                                                 VisibleTill = h.CreatedOn.AddHours(24),
+                                                 h.IsDeleted
+
+                                             }).Where(c => c.IsDeleted == false && c.StoreId == p.StoreId && c.VisibleTill > System.DateTime.Now) })
+                              
+                            .Where(x => x.IsDeleted == false && x.UserId == UserId ).ToList();
+
+                return Ok(list);
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
+
+
     }
 }

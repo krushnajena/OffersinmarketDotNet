@@ -20,9 +20,9 @@ namespace AdminClient.DTO
         public string ProductDescription { get; set; }
 
         public int CreatedBy { get; set; }
-        public List<ProductImageDTO> productImageDTOs { get; set; }
+       
         public List<ProductSpecificationsDTO> productSpecificationsDTOs { get; set; }
-        public IFormFile file { get; set; }
+        public List<IFormFile> files { get; set; }
     }
     public class ProductImageDTO
     {
