@@ -65,5 +65,47 @@ namespace AdminApi.Controllers
             }
         }
 
+        [HttpGet("{UserId}")]
+        public IActionResult GetMyFollowedStores(int UserId) {
+            var list = (from u in _context.Followers
+                        join r in _context.Stores on u.StoreId equals r.StoreId
+                        join l in _context.Categories on r.CategoryId equals l.CategoryId
+                        join c in _context.Cities on r.CityId equals c.CityId
+                        join a in _context.Areas on r.AreaId equals a.AreaId
+                        select new
+                        {
+                            u.UserId,
+                            u.IsDeleted,
+
+                            r.StoreId,
+                            r.StoreCode,
+                            r.StoreName,
+
+                          
+                            r.OwnerName,
+                            r.BusineessContactInfo,
+
+                            r.BusinessLogo,
+                            r.Lat,
+                            r.Long,
+                            r.CategoryId,
+                            r.CityId,
+                            r.AreaId,
+
+                            r.Address,
+                            r.Landmark,
+                            l.CategoryName,
+                            c.CityName,
+                            a.AreaName
+
+
+                        }
+
+
+                        ).Where(x => x.IsDeleted == false && x.UserId == UserId).ToList();
+
+            return Ok(list);
+        }
+
     }
 }
