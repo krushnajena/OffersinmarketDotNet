@@ -19,6 +19,7 @@ namespace AdminApi.Models.App
         public string ProductDescription { get; set; }
         public bool IsActive { get; set; }
         public bool InStock { get; set; }
+        public int? ProductView { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }

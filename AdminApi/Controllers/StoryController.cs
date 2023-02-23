@@ -49,6 +49,7 @@ namespace AdminApi.Controllers
             story.Text = storyDTO.Text;
             story.Image = storyDTO.Image;
             story.CreatedBy = storyDTO.CreatedBy;
+            story.StoryView = 0;
            var a =  _storyRepo.Insert(story);
             return Ok(a);
         }
@@ -64,7 +65,7 @@ namespace AdminApi.Controllers
                                 u.StoryId,
                                 u.StoreId,
                                 u.Text,
-
+                                u.StoryView,
                                 u.Image,
                                 u.CreatedBy,
                                 u.CreatedOn,
@@ -126,7 +127,7 @@ namespace AdminApi.Controllers
 
                                                  h.CreatedBy,
                                                  h.CreatedOn,
-                                                 VisibleTill = h.CreatedOn.AddHours(24),
+                                                 h.StoryView,                                                 VisibleTill = h.CreatedOn.AddHours(24),
                                                  h.IsDeleted
 
                                              }).Where(c => c.IsDeleted == false && c.StoreId == p.StoreId && c.VisibleTill > System.DateTime.Now) })

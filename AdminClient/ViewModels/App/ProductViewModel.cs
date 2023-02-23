@@ -28,10 +28,6 @@ namespace AdminClient.ViewModels.App
         public bool IsDeleted { get; set; }
 
 
-        public ICollection<ProductImageViewModel> ProductImages { get; set; }
-        public ICollection<ProductSpecificationViewModel> ProductSpecifications { get; set; }
-
-        [JsonIgnore]
-        public StoreViewModel Store { get; set; }
+       
     }
 }

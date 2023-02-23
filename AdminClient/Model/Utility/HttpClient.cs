@@ -58,7 +58,7 @@
                                                        //.Replace("\r\n", "'")
                                                        .Trim(new char[1] { '"' });
                     }
-                   
+                               
                      return jsonString;
                 }
             

@@ -7,6 +7,8 @@ using System.IO;
 using System;
 using System.Net.Http.Headers;
 using System.Collections.Generic;
+using AdminClient.ViewModels.App;
+using Newtonsoft.Json;
 
 namespace AdminClient.Controllers
 {
@@ -59,9 +61,9 @@ namespace AdminClient.Controllers
             product.CreatedBy = productDTO.CreatedBy;
             product.productImageDTOs = list;
 
-            product.productSpecificationsDTOs = productDTO.productSpecificationsDTOs;
+           product.productSpecificationsDTOs = JsonConvert.DeserializeObject<List<ProductSpecificationsDTO>>(productDTO.productSpecificationsDTOs);
 
-            var a = _product.CreateProduct(product);
+           var a = _product.CreateProduct(product);
 
             return Ok(a);
         }

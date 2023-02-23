@@ -24,7 +24,7 @@ namespace AdminClient.Model.Product
             try
             {
                 ProductViewModel objupdateResults = new ProductViewModel();
-                objupdateResults = JsonConvert.DeserializeObject<ProductViewModel>(_objIHttpWebClients.PostRequest("/api/Product/CreateProduct", JsonConvert.SerializeObject(productNewDTO), true));
+                objupdateResults = JsonConvert.DeserializeObject<ProductViewModel>(_objIHttpWebClients.PostRequest("api/Product/CreateProduct", JsonConvert.SerializeObject(productNewDTO), true));
                 return objupdateResults;
             }
             catch (Exception ex)

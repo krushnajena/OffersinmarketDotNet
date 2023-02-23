@@ -21,7 +21,7 @@ namespace AdminClient.DTO
 
         public int CreatedBy { get; set; }
        
-        public List<ProductSpecificationsDTO> productSpecificationsDTOs { get; set; }
+        public string productSpecificationsDTOs { get; set; }
         public List<IFormFile> files { get; set; }
     }
     public class ProductImageDTO

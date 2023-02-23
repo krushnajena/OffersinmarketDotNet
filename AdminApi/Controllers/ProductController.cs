@@ -79,6 +79,7 @@ namespace AdminApi.Controllers
 
             product.IsActive = false;
             product.InStock = true;
+                product.ProductView = 0;
             product.CreatedBy = productDTO.CreatedBy;
             var obj = _productRepo.Insert(product);
             for(int i = 0; i < productDTO.productImageDTOs.Count; i++)
@@ -101,5 +102,91 @@ namespace AdminApi.Controllers
             }
             return Ok(obj);
         }
+
+        [HttpGet("{StoreId}")]
+        public IActionResult GetProductsByStoreIdStoreSide(int StoreId)
+        {
+            var objProducts = _context.Products.Include(s => s.ProductImages)
+                                    
+                                      .Select(p => new
+                                      {
+                                          StoreId = p.StoreId,
+                                          ProductId = p.ProductId,
+                                          ProductCode = p.ProductCode,
+                                          ProductName = p.ProductName,
+                                          CategoryId = p.CategoryId,
+                                          SecondaryCategoryId = p.SecondaryCategoryId,
+                                          TernaryCategoryId = p.TernaryCategoryId,
+                                          MRP = p.MRP,
+                                          SellingPrice = p.SellingPrice,
+                                          Discount = p.MRP-p.SellingPrice,
+                                          DiscountPercentage = (p.MRP - p.SellingPrice)>0? (((p.MRP - p.SellingPrice) / p .MRP) *100):0,
+                                          Unit = p.Unit,
+                                          ProductDescription = p.ProductDescription,
+                                          IsActive = p.IsActive,
+                                          InStock = p.InStock,
+                                          IsDeleted = p.IsDeleted,
+                                          ProductView= p.ProductView,
+                                          ProductImages = p.ProductImages.Where(c => c.IsDeleted == false)
+                                         
+                                      }).Where(opt => opt.StoreId == StoreId && opt.IsDeleted == false ).ToList();
+
+            var categoryList = (from u in _context.Products
+                                join r in _context.Categories on u.TernaryCategoryId equals r.CategoryId
+                                select new
+                                {
+                                    u.StoreId,
+                                    u.IsDeleted,
+                                    u.TernaryCategoryId,
+                                    r.CategoryName,
+                                    r.Icon
+                                }
+
+
+                            ).Where(x => x.IsDeleted == false && x.StoreId == StoreId ).Distinct().ToList();
+
+               return Ok(new { products = objProducts, categories = categoryList, }); 
+        }
+
+
+        [HttpGet("{ProductId}/{CreatedBy}")]
+        public IActionResult DeleteProduct(int ProductId,int CreatedBy)
+        {
+            try
+            {
+                var objState = _context.Products.SingleOrDefault(opt => opt.ProductId == ProductId);
+                objState.IsDeleted = true;
+                objState.UpdatedBy = CreatedBy;
+                objState.UpdatedOn = System.DateTime.Now; ;
+                _context.SaveChanges();
+                return Ok(objState);
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
+
+        [HttpGet("{ProductId}/{CreatedBy}/{InStock}")]
+        public IActionResult UpdateProductStock(int ProductId, int CreatedBy,bool InStock)
+        {
+            try
+            {
+                var objState = _context.Products.SingleOrDefault(opt => opt.ProductId == ProductId);
+                objState.InStock = InStock;
+                objState.UpdatedBy = CreatedBy;
+                objState.UpdatedOn = System.DateTime.Now; ;
+                _context.SaveChanges();
+                return Ok(objState);
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
+
+
+
+
     }
 }
