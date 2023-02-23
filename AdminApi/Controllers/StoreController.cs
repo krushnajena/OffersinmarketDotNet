@@ -452,89 +452,166 @@ namespace AdminApi.Controllers
         [HttpGet("{CategoryId}")]
         public IActionResult GetStoresByCategoryId(int CategoryId)
         {
-            var objStores = _context.Stores.Include(s => s.StoreRattings)
-                                            .Include(s => s.Followers)
-                                                .Include(s => s.RestaurantImages)
-                                                    .Include(s => s.RestaurantCuisines)
-                                                    .Include(s => s.RestaurantPriceForTwos)
-                        .Select(p => new
-                        {
-                            StoreId = p.StoreId,
-                            StoreName = p.StoreName,
+            #region For Resturent
+            if (CategoryId == 1)
+            {
 
-                            StoreCode = p.StoreCode,
-                            UserId = p.UserId,
+                var objStores = _context.Stores.Include(s => s.StoreRattings)
+                                                .Include(s => s.Followers)
+                                                    .Include(s => s.RestaurantImages)
+                                                        .Include(s => s.RestaurantCuisines)
+                                                        .Include(s => s.RestaurantPriceForTwos)
+                            .Select(p => new
+                            {
+                                StoreId = p.StoreId,
+                                StoreName = p.StoreName,
 
-                            CategoryId = p.CategoryId,
-                            OwnerName = p.OwnerName,
+                                StoreCode = p.StoreCode,
+                                UserId = p.UserId,
 
-                            BusineessContactInfo = p.BusineessContactInfo,
-                            BusinessLogo = p.BusinessLogo,
+                                CategoryId = p.CategoryId,
+                                OwnerName = p.OwnerName,
 
-                            Lat = p.Lat,
-                            Long = p.Long,
+                                BusineessContactInfo = p.BusineessContactInfo,
+                                BusinessLogo = p.BusinessLogo,
 
-                            Address = p.Address,
-                            Landmark = p.Landmark,
+                                Lat = p.Lat,
+                                Long = p.Long,
 
-                            StateId = p.StateId,
-                            CityId = p.CityId,
+                                Address = p.Address,
+                                Landmark = p.Landmark,
 
-                            AreaId = p.AreaId,
-                            IsSundayOpen = p.IsSundayOpen,
-                            SundayOpenTime = p.SundayOpenTime,
-                            SundayCloseTime = p.SundayCloseTime,
-                            IsMondayOpen = p.IsMondayOpen,
-                            MondayOpenTime = p.MondayOpenTime,
-                            MondayCloseTime = p.MondayCloseTime,
-                            IsTuesdayOpen = p.IsTuesdayOpen,
-                            TuesdayOpenTime = p.TuesdayOpenTime,
-                            TuesdayCloseTime = p.TuesdayCloseTime,
-                            IsWednessdayOpen = p.IsWednessdayOpen,
-                            WednessdayOpenTime = p.WednessdayOpenTime,
-                            WednessdayCloseTime = p.WednessdayCloseTime,
+                                StateId = p.StateId,
+                                CityId = p.CityId,
 
-                            IsThursdayOpen = p.IsThursdayOpen,
-                            ThursdayOpenTime = p.ThursdayOpenTime,
-                            ThursdayCloseTime = p.ThursdayCloseTime,
+                                AreaId = p.AreaId,
+                                IsSundayOpen = p.IsSundayOpen,
+                                SundayOpenTime = p.SundayOpenTime,
+                                SundayCloseTime = p.SundayCloseTime,
+                                IsMondayOpen = p.IsMondayOpen,
+                                MondayOpenTime = p.MondayOpenTime,
+                                MondayCloseTime = p.MondayCloseTime,
+                                IsTuesdayOpen = p.IsTuesdayOpen,
+                                TuesdayOpenTime = p.TuesdayOpenTime,
+                                TuesdayCloseTime = p.TuesdayCloseTime,
+                                IsWednessdayOpen = p.IsWednessdayOpen,
+                                WednessdayOpenTime = p.WednessdayOpenTime,
+                                WednessdayCloseTime = p.WednessdayCloseTime,
 
-                            IsFridayOpen = p.IsFridayOpen,
-                            FridayOpenTime = p.FridayOpenTime,
+                                IsThursdayOpen = p.IsThursdayOpen,
+                                ThursdayOpenTime = p.ThursdayOpenTime,
+                                ThursdayCloseTime = p.ThursdayCloseTime,
 
-                            FridayCloseTime = p.FridayCloseTime,
-                            IsSaturdayOpen = p.IsSaturdayOpen,
+                                IsFridayOpen = p.IsFridayOpen,
+                                FridayOpenTime = p.FridayOpenTime,
 
-                            SaturdayOpenTime = p.SaturdayOpenTime,
-                            SaturdayCloseTime = p.SaturdayCloseTime,
-                            RefferedBy = p.RefferedBy,
-                            IsDeleted = p.IsDeleted,
-                            Rattings = p.StoreRattings.Where(c => c.IsDeleted == false),
-                            Ratting = p.StoreRattings.Where(c => c.IsDeleted == false).Average(l => l.AppliedRatting),
+                                FridayCloseTime = p.FridayCloseTime,
+                                IsSaturdayOpen = p.IsSaturdayOpen,
 
-                            Followers = p.Followers.Where(c => c.IsDeleted == false),
-                            Cusines = (from h in p.RestaurantCuisines
-                                       join l in _context.Cuisines on h.CusineId equals l.CuisineId
-                                       select new
-                                       {
-                                           h.CusineId,
-                                           l.CuisineName,
-                                           h.IsDeleted
+                                SaturdayOpenTime = p.SaturdayOpenTime,
+                                SaturdayCloseTime = p.SaturdayCloseTime,
+                                RefferedBy = p.RefferedBy,
+                                IsDeleted = p.IsDeleted,
+                                Rattings = p.StoreRattings.Where(c => c.IsDeleted == false),
+                                Ratting = p.StoreRattings.Where(c => c.IsDeleted == false).Average(l => l.AppliedRatting),
 
-                                       }
-                             )
-                            .Where(c => c.IsDeleted == false),
-                            RestaurantPriceForTwo = p.RestaurantPriceForTwos.Where(c => c.IsDeleted == false),
-                            Banners = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Banner" && c.IsActive == true),
-                            Menu = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Menu" && c.IsActive == true),
-                            Ambience = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Ambience" && c.IsActive == true),
-                            Food = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Food" && c.IsActive == true),
-                        }).Where(opt => opt.CategoryId == CategoryId && opt.IsDeleted == false).ToList();
+                                Followers = p.Followers.Where(c => c.IsDeleted == false),
+                                Cusines = (from h in p.RestaurantCuisines
+                                           join l in _context.Cuisines on h.CusineId equals l.CuisineId
+                                           select new
+                                           {
+                                               h.CusineId,
+                                               l.CuisineName,
+                                               h.IsDeleted
+
+                                           }
+                                 )
+                                .Where(c => c.IsDeleted == false),
+                                RestaurantPriceForTwo = p.RestaurantPriceForTwos.Where(c => c.IsDeleted == false),
+                                Banners = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Banner" && c.IsActive == true),
+                                Menu = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Menu" && c.IsActive == true),
+                                Ambience = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Ambience" && c.IsActive == true),
+                                Food = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Food" && c.IsActive == true),
+                            }).Where(opt => opt.CategoryId == CategoryId && opt.IsDeleted == false).ToList();
+                
+                return Ok(objStores);
 
 
+            }
+#endregion
+            #region For Other Store Categories
+            else
+            {
+                var objStores = _context.Stores.Include(s => s.StoreRattings)
+                                               .Include(s => s.Followers)
+                                                   .Include(s => s.Products)
+                                                      
+                           .Select(p => new
+                           {
+                               StoreId = p.StoreId,
+                               StoreName = p.StoreName,
+
+                               StoreCode = p.StoreCode,
+                               UserId = p.UserId,
+
+                               CategoryId = p.CategoryId,
+                               OwnerName = p.OwnerName,
+
+                               BusineessContactInfo = p.BusineessContactInfo,
+                               BusinessLogo = p.BusinessLogo,
+
+                               Lat = p.Lat,
+                               Long = p.Long,
+
+                               Address = p.Address,
+                               Landmark = p.Landmark,
+
+                               StateId = p.StateId,
+                               CityId = p.CityId,
+
+                               AreaId = p.AreaId,
+                               IsSundayOpen = p.IsSundayOpen,
+                               SundayOpenTime = p.SundayOpenTime,
+                               SundayCloseTime = p.SundayCloseTime,
+                               IsMondayOpen = p.IsMondayOpen,
+                               MondayOpenTime = p.MondayOpenTime,
+                               MondayCloseTime = p.MondayCloseTime,
+                               IsTuesdayOpen = p.IsTuesdayOpen,
+                               TuesdayOpenTime = p.TuesdayOpenTime,
+                               TuesdayCloseTime = p.TuesdayCloseTime,
+                               IsWednessdayOpen = p.IsWednessdayOpen,
+                               WednessdayOpenTime = p.WednessdayOpenTime,
+                               WednessdayCloseTime = p.WednessdayCloseTime,
+
+                               IsThursdayOpen = p.IsThursdayOpen,
+                               ThursdayOpenTime = p.ThursdayOpenTime,
+                               ThursdayCloseTime = p.ThursdayCloseTime,
+
+                               IsFridayOpen = p.IsFridayOpen,
+                               FridayOpenTime = p.FridayOpenTime,
+
+                               FridayCloseTime = p.FridayCloseTime,
+                               IsSaturdayOpen = p.IsSaturdayOpen,
+
+                               SaturdayOpenTime = p.SaturdayOpenTime,
+                               SaturdayCloseTime = p.SaturdayCloseTime,
+                               RefferedBy = p.RefferedBy,
+                               IsDeleted = p.IsDeleted,
+                               Rattings = p.StoreRattings.Where(c => c.IsDeleted == false),
+                               Ratting = p.StoreRattings.Where(c => c.IsDeleted == false).Average(l => l.AppliedRatting),
+
+                               Followers = p.Followers.Where(c => c.IsDeleted == false),
+                              
+                               Products = p.Products.Where(c => c.IsDeleted == false && c.TernaryCategoryId == CategoryId),
+                             
+                           }).Where(opt =>  opt.IsDeleted == false && opt.Products.Count()>0).ToList();
+
+                return Ok(objStores);
+
+            }
+            #endregion
 
 
-            ;
-            return Ok(objStores);
 
         }
 
@@ -542,7 +619,10 @@ namespace AdminApi.Controllers
         [HttpGet("{CategoryId}/{AreaId}")]
         public IActionResult GetStoresByCategoryIdAndAreaId(int CategoryId,int AreaId)
         {
-            var objStores = _context.Stores.Include(s => s.StoreRattings)
+            #region For Resturent
+            if (CategoryId == 1)
+            {
+                var objStores = _context.Stores.Include(s => s.StoreRattings)
                                             .Include(s => s.Followers)
                                                 .Include(s => s.RestaurantImages)
                                                     .Include(s => s.RestaurantCuisines)
@@ -618,13 +698,88 @@ namespace AdminApi.Controllers
                             Menu = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Menu" && c.IsActive == true),
                             Ambience = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Ambience" && c.IsActive == true),
                             Food = p.RestaurantImages.Where(c => c.IsDeleted == false && c.ImageType == "Food" && c.IsActive == true),
-                        }).Where(opt => opt.CategoryId == CategoryId && opt.IsDeleted == false && opt.AreaId== AreaId).ToList();
+                        }).Where(opt => opt.CategoryId == CategoryId && opt.IsDeleted == false && opt.AreaId == AreaId).ToList();
 
 
 
 
-            ;
-            return Ok(objStores);
+
+                return Ok(objStores);
+            }
+            #endregion
+            #region For Other Store Categories
+            else
+            {
+                var objStores = _context.Stores.Include(s => s.StoreRattings)
+                                               .Include(s => s.Followers)
+                                                   .Include(s => s.Products)
+
+                           .Select(p => new
+                           {
+                               StoreId = p.StoreId,
+                               StoreName = p.StoreName,
+
+                               StoreCode = p.StoreCode,
+                               UserId = p.UserId,
+
+                               CategoryId = p.CategoryId,
+                               OwnerName = p.OwnerName,
+
+                               BusineessContactInfo = p.BusineessContactInfo,
+                               BusinessLogo = p.BusinessLogo,
+
+                               Lat = p.Lat,
+                               Long = p.Long,
+
+                               Address = p.Address,
+                               Landmark = p.Landmark,
+
+                               StateId = p.StateId,
+                               CityId = p.CityId,
+
+                               AreaId = p.AreaId,
+                               IsSundayOpen = p.IsSundayOpen,
+                               SundayOpenTime = p.SundayOpenTime,
+                               SundayCloseTime = p.SundayCloseTime,
+                               IsMondayOpen = p.IsMondayOpen,
+                               MondayOpenTime = p.MondayOpenTime,
+                               MondayCloseTime = p.MondayCloseTime,
+                               IsTuesdayOpen = p.IsTuesdayOpen,
+                               TuesdayOpenTime = p.TuesdayOpenTime,
+                               TuesdayCloseTime = p.TuesdayCloseTime,
+                               IsWednessdayOpen = p.IsWednessdayOpen,
+                               WednessdayOpenTime = p.WednessdayOpenTime,
+                               WednessdayCloseTime = p.WednessdayCloseTime,
+
+                               IsThursdayOpen = p.IsThursdayOpen,
+                               ThursdayOpenTime = p.ThursdayOpenTime,
+                               ThursdayCloseTime = p.ThursdayCloseTime,
+
+                               IsFridayOpen = p.IsFridayOpen,
+                               FridayOpenTime = p.FridayOpenTime,
+
+                               FridayCloseTime = p.FridayCloseTime,
+                               IsSaturdayOpen = p.IsSaturdayOpen,
+
+                               SaturdayOpenTime = p.SaturdayOpenTime,
+                               SaturdayCloseTime = p.SaturdayCloseTime,
+                               RefferedBy = p.RefferedBy,
+                               IsDeleted = p.IsDeleted,
+                               Rattings = p.StoreRattings.Where(c => c.IsDeleted == false),
+                               Ratting = p.StoreRattings.Where(c => c.IsDeleted == false).Average(l => l.AppliedRatting),
+
+                               Followers = p.Followers.Where(c => c.IsDeleted == false),
+
+                               Products = p.Products.Where(c => c.IsDeleted == false && c.TernaryCategoryId == CategoryId),
+
+                           }).Where(opt => opt.IsDeleted == false && opt.Products.Count() > 0 && opt.AreaId == AreaId).ToList();
+
+                return Ok(objStores);
+
+            }
+            #endregion
+
+
 
         }
 

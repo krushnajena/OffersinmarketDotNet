@@ -61,6 +61,8 @@ namespace AdminApi.Models
 
 
         public virtual DbSet<ViewCount> ViewCounts { get; set; }
+
+        public virtual DbSet<Cart> Carts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {   
 
@@ -278,6 +280,16 @@ namespace AdminApi.Models
 .HasDefaultValue(System.DateTime.Now);
 
             modelBuilder.Entity<ViewCount>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+            modelBuilder.Entity<Cart>()
+.Property(s => s.CreatedOn)
+.HasDefaultValue(System.DateTime.Now);
+
+            modelBuilder.Entity<Cart>()
              .Property(s => s.IsDeleted)
              .HasDefaultValue(false)
              .ValueGeneratedNever();

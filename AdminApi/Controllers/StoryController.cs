@@ -106,33 +106,40 @@ namespace AdminApi.Controllers
 
 
         [HttpGet("{UserId}")]
-        public IActionResult GetMyFollowedStoryListByStoreId(int UserId)
+        public IActionResult GetMyFollowedStoryListBuyerSide(int UserId)
         {
             try
             {
-                var list =   _context.Followers
-                        
-                              .Select(p => new
-                              {       
-                                        p.IsDeleted,
-                                        p.UserId,
-                                        Stories = (from h in _context.Stories
+                var list = (from u in _context.Followers
+                            join r in _context.Stores on u.StoreId equals r.StoreId
+                           
+                            select new
+                            {
+                                u.UserId,
+                                u.IsDeleted,
 
-                                             select new
-                                             {
-                                                 h.StoryId,
-                                                 h.StoreId,
-                                                 h.Image,
-                                                 h.Text,
+                                r.StoreId,
+                                r.StoreCode,
+                                r.StoreName,
 
-                                                 h.CreatedBy,
-                                                 h.CreatedOn,
-                                                 h.StoryView,                                                 VisibleTill = h.CreatedOn.AddHours(24),
-                                                 h.IsDeleted
 
-                                             }).Where(c => c.IsDeleted == false && c.StoreId == p.StoreId && c.VisibleTill > System.DateTime.Now) })
-                              
-                            .Where(x => x.IsDeleted == false && x.UserId == UserId ).ToList();
+                                r.OwnerName,
+                                r.BusineessContactInfo,
+
+                                r.BusinessLogo,
+                                r.Lat,
+                                r.Long,
+                                r.CategoryId,
+                                r.CityId,
+                                r.AreaId,
+
+                                r.Address,
+                                r.Landmark,
+                               Stories = r.Stories.Where(d=>d.IsDeleted==false &&  d.CreatedOn.AddHours(24) > System.DateTime.Now)
+
+                            }
+
+                            ).Where(t => t.UserId == UserId && t.IsDeleted == false && t.Stories.Count()>0).ToList();
 
                 return Ok(list);
             }
@@ -142,6 +149,8 @@ namespace AdminApi.Controllers
             }
         }
 
+     
+    
 
     }
 }
