@@ -186,6 +186,135 @@ namespace AdminApi.Controllers
         }
 
 
+        [HttpGet("{ProductId}")]
+        public IActionResult GetProductDetailsByProductId(int ProductId)
+        {
+            var objProducts = _context.Products.Include(s => s.ProductImages)
+                                               .Include(s=>s.ProductSpecifications)
+                                               
+                                               
+
+                                     .Select(p => new
+                                     {
+
+                                         StoreId = p.StoreId,
+                                         ProductId = p.ProductId,
+                                         ProductCode = p.ProductCode,
+                                         ProductName = p.ProductName,
+                                         CategoryId = p.CategoryId,
+                                         SecondaryCategoryId = p.SecondaryCategoryId,
+                                         TernaryCategoryId = p.TernaryCategoryId,
+                                         MRP = p.MRP,
+                                         SellingPrice = p.SellingPrice,
+                                         Discount = p.MRP - p.SellingPrice,
+                                         DiscountPercentage = (p.MRP - p.SellingPrice) > 0 ? (((p.MRP - p.SellingPrice) / p.MRP) * 100) : 0,
+                                         Unit = p.Unit,
+                                         ProductDescription = p.ProductDescription,
+                                         IsActive = p.IsActive,
+                                         InStock = p.InStock,
+                                         IsDeleted = p.IsDeleted,
+                                         ProductView = p.ProductView,
+                                         ProductImages = p.ProductImages.Where(c => c.IsDeleted == false),
+                                         ProductSpecifications = p.ProductSpecifications.Where(c => c.IsDeleted == false),
+                                        
+
+                                     }).Where(opt => opt.ProductId == ProductId && opt.IsDeleted == false).SingleOrDefault();
+
+            var objStores = _context.Stores.Include(s => s.StoreRattings)
+                                           .Include(s => s.Followers)
+                                               .Include(s => s.Products
+                                                  ).ThenInclude(s => s.ProductImages)
+                       .Select(p => new
+                       {
+                           StoreId = p.StoreId,
+                           StoreName = p.StoreName,
+
+                           StoreCode = p.StoreCode,
+                           UserId = p.UserId,
+
+                           CategoryId = p.CategoryId,
+                           OwnerName = p.OwnerName,
+
+                           BusineessContactInfo = p.BusineessContactInfo,
+                           BusinessLogo = p.BusinessLogo,
+
+                           Lat = p.Lat,
+                           Long = p.Long,
+
+                           Address = p.Address,
+                           Landmark = p.Landmark,
+
+                           StateId = p.StateId,
+                           CityId = p.CityId,
+
+                           AreaId = p.AreaId,
+                           IsSundayOpen = p.IsSundayOpen,
+                           SundayOpenTime = p.SundayOpenTime,
+                           SundayCloseTime = p.SundayCloseTime,
+                           IsMondayOpen = p.IsMondayOpen,
+                           MondayOpenTime = p.MondayOpenTime,
+                           MondayCloseTime = p.MondayCloseTime,
+                           IsTuesdayOpen = p.IsTuesdayOpen,
+                           TuesdayOpenTime = p.TuesdayOpenTime,
+                           TuesdayCloseTime = p.TuesdayCloseTime,
+                           IsWednessdayOpen = p.IsWednessdayOpen,
+                           WednessdayOpenTime = p.WednessdayOpenTime,
+                           WednessdayCloseTime = p.WednessdayCloseTime,
+
+                           IsThursdayOpen = p.IsThursdayOpen,
+                           ThursdayOpenTime = p.ThursdayOpenTime,
+                           ThursdayCloseTime = p.ThursdayCloseTime,
+
+                           IsFridayOpen = p.IsFridayOpen,
+                           FridayOpenTime = p.FridayOpenTime,
+
+                           FridayCloseTime = p.FridayCloseTime,
+                           IsSaturdayOpen = p.IsSaturdayOpen,
+
+                           SaturdayOpenTime = p.SaturdayOpenTime,
+                           SaturdayCloseTime = p.SaturdayCloseTime,
+                           RefferedBy = p.RefferedBy,
+                           IsDeleted = p.IsDeleted,
+                           Rattings = p.StoreRattings.Where(c => c.IsDeleted == false),
+                           Ratting = p.StoreRattings.Where(c => c.IsDeleted == false).Average(l => l.AppliedRatting),
+
+                           Followers = p.Followers.Where(c => c.IsDeleted == false),
+                         //  IFollow = p.Followers.Where((c => c.IsDeleted == false && c.UserId == UserId)),
+                           Products = p.Products
+                              .Select(c => new
+                              {
+
+                                  StoreId = c.StoreId,
+                                  ProductId = c.ProductId,
+                                  ProductCode = c.ProductCode,
+                                  ProductName = c.ProductName,
+                                  CategoryId = c.CategoryId,
+                                  SecondaryCategoryId = c.SecondaryCategoryId,
+                                  TernaryCategoryId = c.TernaryCategoryId,
+                                  MRP = c.MRP,
+                                  SellingPrice = c.SellingPrice,
+                                  Discount = c.MRP - c.SellingPrice,
+                                  DiscountPercentage = (c.MRP - c.SellingPrice) > 0 ? (((c.MRP - c.SellingPrice) / c.MRP) * 100) : 0,
+                                  Unit = c.Unit,
+                                  ProductDescription = c.ProductDescription,
+                                  IsActive = c.IsActive,
+                                  InStock = c.InStock,
+                                  IsDeleted = c.IsDeleted,
+                                  ProductView = c.ProductView,
+                                  ProductImages = c.ProductImages.Where(c => c.IsDeleted == false)
+
+
+                              })
+
+                              .Where(c => c.IsDeleted == false && c.IsActive == true && c.InStock == true && c.TernaryCategoryId == objProducts.TernaryCategoryId),
+
+
+
+                       }).SingleOrDefault(opt => opt.StoreId == objProducts.StoreId && opt.IsDeleted == false);
+            return Ok(new { prodcutDetails = objProducts, storeDetails = objStores, });
+
+        }
+
 
 
     }
