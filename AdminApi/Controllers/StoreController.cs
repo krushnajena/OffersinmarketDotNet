@@ -544,8 +544,11 @@ namespace AdminApi.Controllers
             {
                 var objStores = _context.Stores.Include(s => s.StoreRattings)
                                                .Include(s => s.Followers)
-                                                   .Include(s => s.Products)
-                                                      
+                                                   .Include(s => s.Products
+                                                   
+                                                   
+                                                   ).ThenInclude(s=>s.ProductImages)
+                                                        
                            .Select(p => new
                            {
                                StoreId = p.StoreId,
@@ -602,7 +605,33 @@ namespace AdminApi.Controllers
 
                                Followers = p.Followers.Where(c => c.IsDeleted == false),
                               
-                               Products = p.Products.Where(c => c.IsDeleted == false && c.TernaryCategoryId == CategoryId),
+                               Products = p.Products
+                               .Select(c => new
+                               {
+
+                                   StoreId = c.StoreId,
+                                   ProductId = c.ProductId,
+                                   ProductCode = c.ProductCode,
+                                   ProductName = c.ProductName,
+                                   CategoryId = c.CategoryId,
+                                   SecondaryCategoryId = c.SecondaryCategoryId,
+                                   TernaryCategoryId = c.TernaryCategoryId,
+                                   MRP = c.MRP,
+                                   SellingPrice = c.SellingPrice,
+                                   Discount = c.MRP - c.SellingPrice,
+                                   DiscountPercentage = (c.MRP - c.SellingPrice) > 0 ? (((c.MRP - c.SellingPrice) / c.MRP) * 100) : 0,
+                                   Unit = c.Unit,
+                                   ProductDescription = c.ProductDescription,
+                                   IsActive = c.IsActive,
+                                   InStock = c.InStock,
+                                   IsDeleted = c.IsDeleted,
+                                   ProductView = c.ProductView,
+                                   ProductImages = c.ProductImages.Where(c => c.IsDeleted == false)
+                                
+
+                               })
+                               
+                               .Where(c => c.IsDeleted == false && c.TernaryCategoryId == CategoryId && c.IsActive ==true && c.InStock == true),
                              
                            }).Where(opt =>  opt.IsDeleted == false && opt.Products.Count()>0).ToList();
 
@@ -712,7 +741,10 @@ namespace AdminApi.Controllers
             {
                 var objStores = _context.Stores.Include(s => s.StoreRattings)
                                                .Include(s => s.Followers)
-                                                   .Include(s => s.Products)
+                                                   .Include(s => s.Products
+
+
+                                                   ).ThenInclude(s => s.ProductImages)
 
                            .Select(p => new
                            {
@@ -770,7 +802,33 @@ namespace AdminApi.Controllers
 
                                Followers = p.Followers.Where(c => c.IsDeleted == false),
 
-                               Products = p.Products.Where(c => c.IsDeleted == false && c.TernaryCategoryId == CategoryId),
+                               Products = p.Products
+                               .Select(c => new
+                               {
+
+                                   StoreId = c.StoreId,
+                                   ProductId = c.ProductId,
+                                   ProductCode = c.ProductCode,
+                                   ProductName = c.ProductName,
+                                   CategoryId = c.CategoryId,
+                                   SecondaryCategoryId = c.SecondaryCategoryId,
+                                   TernaryCategoryId = c.TernaryCategoryId,
+                                   MRP = c.MRP,
+                                   SellingPrice = c.SellingPrice,
+                                   Discount = c.MRP - c.SellingPrice,
+                                   DiscountPercentage = (c.MRP - c.SellingPrice) > 0 ? (((c.MRP - c.SellingPrice) / c.MRP) * 100) : 0,
+                                   Unit = c.Unit,
+                                   ProductDescription = c.ProductDescription,
+                                   IsActive = c.IsActive,
+                                   InStock = c.InStock,
+                                   IsDeleted = c.IsDeleted,
+                                   ProductView = c.ProductView,
+                                   ProductImages = c.ProductImages.Where(c => c.IsDeleted == false)
+
+
+                               })
+
+                               .Where(c => c.IsDeleted == false && c.TernaryCategoryId == CategoryId && c.IsActive == true && c.InStock == true),
 
                            }).Where(opt => opt.IsDeleted == false && opt.Products.Count() > 0 && opt.AreaId == AreaId).ToList();
 
@@ -778,6 +836,7 @@ namespace AdminApi.Controllers
 
             }
             #endregion
+                
 
 
 
