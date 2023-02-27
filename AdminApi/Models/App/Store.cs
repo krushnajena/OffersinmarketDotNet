@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json.Serialization;
 
 namespace AdminApi.Models.App
 {
@@ -73,5 +74,8 @@ namespace AdminApi.Models.App
         public ICollection<Product> Products { get; set; }
 
         public ICollection<Story> Stories{ get; set; }
+
+        [JsonIgnore]
+        public Category Category { get; set; }
     }
 }

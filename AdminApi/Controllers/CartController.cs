@@ -43,7 +43,7 @@ namespace AdminApi.Controllers
         [HttpPost]
         public IActionResult AddToCart(CartDTO cartDTO)
         {
-            var a = _context.Carts.Where(x => x.ProductId == cartDTO.ProductId && x.UserId == cartDTO.UserId && x.Type == cartDTO.Type).SingleOrDefault();
+            var a = _context.Carts.Where(x => x.ProductId == cartDTO.ProductId && x.UserId == cartDTO.UserId && x.Type == cartDTO.Type&&x.IsDeleted==false).SingleOrDefault();
             if (a==null)
             {
                 Cart cart = new Cart();
@@ -70,10 +70,10 @@ namespace AdminApi.Controllers
 
         }
 
-        [HttpGet("{ProductId}/{UserId}")]
-        public IActionResult RemoveFromCart(int ProductId, int UserId)
+        [HttpGet("{CartId}/{UserId}")]
+        public IActionResult RemoveFromCart(int CartId, int UserId)
         {
-            var a = _context.Carts.Where(x => x.ProductId == ProductId && x.UserId == UserId).SingleOrDefault();
+            var a = _context.Carts.Where(x => x.CartId == CartId).SingleOrDefault();
             if (a != null)
             {
                 a.IsDeleted = true;
@@ -86,6 +86,27 @@ namespace AdminApi.Controllers
             else
             {
                 return BadRequest("Item Already Removed From Cart.");
+            }
+
+        }
+
+
+        [HttpGet("{CartId}/{UserId}")]
+        public IActionResult MoveToCart(int CartId, int UserId)
+        {
+            var a = _context.Carts.Where(x => x.CartId == CartId).SingleOrDefault();
+            if (a != null)
+            {
+                a.Type = "Cart";
+                a.UpdatedBy = UserId;
+                a.UpdatedOn = System.DateTime.Now;
+                _context.SaveChanges();
+                return Ok("Item Moved To Cart");
+            }
+
+            else
+            {
+                return BadRequest("Item Already Moved To Cart.");
             }
 
         }

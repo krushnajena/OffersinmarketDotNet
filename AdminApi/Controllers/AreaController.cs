@@ -232,5 +232,36 @@ namespace AdminApi.Controllers
             }
         }
 
+
+        [HttpGet("{AreaName}")]
+        public IActionResult GetAreaListSearch( string AreaName)
+        {
+            try
+            {
+                var list = (from u in _context.Areas
+                            join l in _context.Cities on u.CityId equals l.CityId
+                            join r in _context.States on l.StateId equals r.StateId
+                            select new
+                            {
+                                u.AreaName,
+                                u.AreaId,
+                                u.CityId,
+                                r.StateName,
+
+                                l.CityName,
+                                u.IsDeleted
+
+                            }
+
+
+                            ).Where(x => x.AreaName.StartsWith(AreaName)).ToList();
+
+                return Ok(list);
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
     }
 }

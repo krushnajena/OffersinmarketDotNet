@@ -49,7 +49,8 @@ namespace AdminApi.Controllers
             view.ContentType = viewCountDTO.ContentType;
             view.ContentId = viewCountDTO.ContentId;
             view.CreatedBy = viewCountDTO.CreatedBy;
-           var obj= _viewCountRepo.Insert(view);
+         
+            var obj= _viewCountRepo.Insert(view);
             if(viewCountDTO.ContentType == "Story")
             {
                 var objState = _context.Stories.SingleOrDefault(opt => opt.StoryId == viewCountDTO.ContentId);

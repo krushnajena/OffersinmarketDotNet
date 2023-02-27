@@ -2,6 +2,7 @@
 using AdminApi.Models;
 using AdminApi.Models.App;
 using AdminApi.Models.Helper;
+using AdminApi.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -947,6 +948,208 @@ namespace AdminApi.Controllers
                         }).SingleOrDefault(opt => opt.StoreId == StoreId && opt.IsDeleted == false);
 
             return Ok(new { stores = objStores, categories = categoryList, });
+
+        }
+
+
+        [HttpGet]
+        public IActionResult GetTopStoresForHome()
+        {
+            var a = _context.Categories.Include(s => s.Stores)
+                .ThenInclude(s => s.StoreRattings)
+                .Include(s => s.Stores)
+                                               .ThenInclude(s => s.Followers)
+                                               .Include(s => s.Stores)
+                                                   .ThenInclude(s => s.Products
+
+
+                                                   ).ThenInclude(s => s.ProductImages)
+
+                           .Select(p => new
+                           {
+                               p.CategoryId,
+                               p.CategoryName,
+                               p.IsActive,
+                               p.IsDeleted,
+                               p.Order,
+                               p.Icon,
+                               p.Parent,
+                               Stores = p.Stores
+                               .Select(c => new
+                               {
+
+                                   StoreId = c.StoreId,
+
+                                   StoreName = c.StoreName,
+
+                                   StoreCode = c.StoreCode,
+                                   UserId = c.UserId,
+
+                                   CategoryId = c.CategoryId,
+                                   OwnerName = c.OwnerName,
+
+                                   BusineessContactInfo = c.BusineessContactInfo,
+                                   BusinessLogo = c.BusinessLogo,
+
+                                   Lat = c.Lat,
+                                   Long = c.Long,
+
+                                   Address = c.Address,
+                                   Landmark = c.Landmark,
+
+                                   StateId = c.StateId,
+                                   CityId = c.CityId,
+
+                                   AreaId = c.AreaId,
+                                   IsSundayOpen = c.IsSundayOpen,
+                                   SundayOpenTime = c.SundayOpenTime,
+                                   SundayCloseTime = c.SundayCloseTime,
+                                   IsMondayOpen = c.IsMondayOpen,
+                                   MondayOpenTime = c.MondayOpenTime,
+                                   MondayCloseTime = c.MondayCloseTime,
+                                   IsTuesdayOpen = c.IsTuesdayOpen,
+                                   TuesdayOpenTime = c.TuesdayOpenTime,
+                                   TuesdayCloseTime = c.TuesdayCloseTime,
+                                   IsWednessdayOpen = c.IsWednessdayOpen,
+                                   WednessdayOpenTime = c.WednessdayOpenTime,
+                                   WednessdayCloseTime = c.WednessdayCloseTime,
+
+                                   IsThursdayOpen = c.IsThursdayOpen,
+                                   ThursdayOpenTime = c.ThursdayOpenTime,
+                                   ThursdayCloseTime = c.ThursdayCloseTime,
+
+                                   IsFridayOpen = c.IsFridayOpen,
+                                   FridayOpenTime = c.FridayOpenTime,
+
+                                   FridayCloseTime = c.FridayCloseTime,
+                                   IsSaturdayOpen = c.IsSaturdayOpen,
+
+                                   SaturdayOpenTime = c.SaturdayOpenTime,
+                                   SaturdayCloseTime = c.SaturdayCloseTime,
+                                   RefferedBy = c.RefferedBy,
+                                   IsDeleted = c.IsDeleted,
+                                   Rattings = c.StoreRattings.Where(c => c.IsDeleted == false),
+                                   Ratting = c.StoreRattings.Where(c => c.IsDeleted == false).Average(l => l.AppliedRatting),
+
+                                   Followers = c.Followers.Where(c => c.IsDeleted == false),
+                                   StoreIndex = 0,
+                                   Products = c.Products.Select(e => new
+                                   {
+
+
+                                       ProductImages = e.ProductImages.Where(c => c.IsDeleted == false),
+                                       ProductId = e.ProductId,
+                                       ProductCode = e.ProductCode,
+                                       ProductName = e.ProductName,
+                                       CategoryId = e.CategoryId,
+                                       SecondaryCategoryId = e.SecondaryCategoryId,
+                                       TernaryCategoryId = e.TernaryCategoryId,
+                                       MRP = e.MRP,
+                                       SellingPrice = e.SellingPrice,
+                                       Discount = e.MRP - e.SellingPrice,
+                                       DiscountPercentage = (e.MRP - e.SellingPrice) > 0 ? (((e.MRP - e.SellingPrice) / e.MRP) * 100) : 0,
+                                       Unit = e.Unit,
+                                       ProductDescription = e.ProductDescription,
+                                       IsActive = e.IsActive,
+                                       InStock = e.InStock,
+                                       IsDeleted = e.IsDeleted,
+                                       ProductView = e.ProductView,
+                                   }).Where(c => c.IsDeleted == false && c.IsActive == true && c.InStock == true).OrderByDescending(t => t.ProductView).Take(10),
+
+                                   ProductsCount = c.Products.Where(c => c.IsDeleted == false && c.IsActive == true && c.InStock == true).Count(),
+
+                               }).Where(l => l.IsDeleted == false && ((l.ProductsCount>0) || (l.CategoryId == 1))).OrderByDescending(k => k.StoreIndex).Take(2),
+
+                               StoreCount = p.Stores
+                               .Select(c => new
+                               {
+
+                                   StoreId = c.StoreId,
+
+                                   StoreName = c.StoreName,
+
+                                   StoreCode = c.StoreCode,
+                                   UserId = c.UserId,
+
+                                   CategoryId = c.CategoryId,
+                                   OwnerName = c.OwnerName,
+
+                                   BusineessContactInfo = c.BusineessContactInfo,
+                                   BusinessLogo = c.BusinessLogo,
+
+                                   Lat = c.Lat,
+                                   Long = c.Long,
+
+                                   Address = c.Address,
+                                   Landmark = c.Landmark,
+
+                                   StateId = c.StateId,
+                                   CityId = c.CityId,
+
+                                   AreaId = c.AreaId,
+                                   IsSundayOpen = c.IsSundayOpen,
+                                   SundayOpenTime = c.SundayOpenTime,
+                                   SundayCloseTime = c.SundayCloseTime,
+                                   IsMondayOpen = c.IsMondayOpen,
+                                   MondayOpenTime = c.MondayOpenTime,
+                                   MondayCloseTime = c.MondayCloseTime,
+                                   IsTuesdayOpen = c.IsTuesdayOpen,
+                                   TuesdayOpenTime = c.TuesdayOpenTime,
+                                   TuesdayCloseTime = c.TuesdayCloseTime,
+                                   IsWednessdayOpen = c.IsWednessdayOpen,
+                                   WednessdayOpenTime = c.WednessdayOpenTime,
+                                   WednessdayCloseTime = c.WednessdayCloseTime,
+
+                                   IsThursdayOpen = c.IsThursdayOpen,
+                                   ThursdayOpenTime = c.ThursdayOpenTime,
+                                   ThursdayCloseTime = c.ThursdayCloseTime,
+
+                                   IsFridayOpen = c.IsFridayOpen,
+                                   FridayOpenTime = c.FridayOpenTime,
+
+                                   FridayCloseTime = c.FridayCloseTime,
+                                   IsSaturdayOpen = c.IsSaturdayOpen,
+
+                                   SaturdayOpenTime = c.SaturdayOpenTime,
+                                   SaturdayCloseTime = c.SaturdayCloseTime,
+                                   RefferedBy = c.RefferedBy,
+                                   IsDeleted = c.IsDeleted,
+                                   Rattings = c.StoreRattings.Where(c => c.IsDeleted == false),
+                                   Ratting = c.StoreRattings.Where(c => c.IsDeleted == false).Average(l => l.AppliedRatting),
+
+                                   Followers = c.Followers.Where(c => c.IsDeleted == false),
+                                   StoreIndex = 0,
+                                   Products = c.Products.Select(e => new
+                                   {
+
+
+                                       ProductImages = e.ProductImages.Where(c => c.IsDeleted == false),
+                                       ProductId = e.ProductId,
+                                       ProductCode = e.ProductCode,
+                                       ProductName = e.ProductName,
+                                       CategoryId = e.CategoryId,
+                                       SecondaryCategoryId = e.SecondaryCategoryId,
+                                       TernaryCategoryId = e.TernaryCategoryId,
+                                       MRP = e.MRP,
+                                       SellingPrice = e.SellingPrice,
+                                       Discount = e.MRP - e.SellingPrice,
+                                       DiscountPercentage = (e.MRP - e.SellingPrice) > 0 ? (((e.MRP - e.SellingPrice) / e.MRP) * 100) : 0,
+                                       Unit = e.Unit,
+                                       ProductDescription = e.ProductDescription,
+                                       IsActive = e.IsActive,
+                                       InStock = e.InStock,
+                                       IsDeleted = e.IsDeleted,
+                                       ProductView = e.ProductView,
+                                   }).Where(c => c.IsDeleted == false && c.IsActive == true && c.InStock == true).OrderByDescending(t => t.ProductView).Take(10),
+
+                                   ProductsCount = c.Products.Where(c => c.IsDeleted == false && c.IsActive == true && c.InStock == true).Count(),
+
+                               }).Where(l => l.IsDeleted == false && ((l.ProductsCount > 0) || (l.CategoryId == 1))).OrderByDescending(k => k.StoreIndex).Count(),
+
+
+
+                           }).Where(opt => opt.IsDeleted == false && opt.Parent == null && opt.StoreCount>0).ToList();
+            return Ok(a);
 
         }
 

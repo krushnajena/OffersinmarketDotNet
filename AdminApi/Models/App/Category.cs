@@ -18,7 +18,11 @@ namespace AdminApi.Models.App
         public DateTime? UpdatedOn { get; set; }
         public bool IsDeleted { get; set; }
         public ICollection<Category> Children { get; set; }
-     
+
+        public ICollection<Store> Stores{ get; set; }
+
+        
+
 
 
     }

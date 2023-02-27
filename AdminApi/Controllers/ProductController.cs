@@ -145,6 +145,9 @@ namespace AdminApi.Controllers
 
                             ).Where(x => x.IsDeleted == false && x.StoreId == StoreId ).Distinct().ToList();
 
+
+           
+
                return Ok(new { products = objProducts, categories = categoryList, }); 
         }
 
@@ -186,9 +189,11 @@ namespace AdminApi.Controllers
         }
 
 
-        [HttpGet("{ProductId}")]
-        public IActionResult GetProductDetailsByProductId(int ProductId)
+        [HttpGet("{ProductId}/{UserId}")]
+        public IActionResult GetProductDetailsByProductId(int ProductId,int UserId)
         {
+            var wishListCheck =  _context.Carts.Where(x => x.ProductId == ProductId && x.Type == "Wishlist" && x.UserId == UserId&& x.IsDeleted ==false).ToList();
+            var cartCheck = _context.Carts.Where(x => x.ProductId == ProductId && x.Type == "Cart" && x.UserId == UserId && x.IsDeleted == false).ToList();
             var objProducts = _context.Products.Include(s => s.ProductImages)
                                                .Include(s=>s.ProductSpecifications)
                                                
@@ -311,7 +316,7 @@ namespace AdminApi.Controllers
 
 
                        }).SingleOrDefault(opt => opt.StoreId == objProducts.StoreId && opt.IsDeleted == false);
-            return Ok(new { prodcutDetails = objProducts, storeDetails = objStores, });
+            return Ok(new { prodcutDetails = objProducts, storeDetails = objStores,wishListCheck = wishListCheck, cartCheck =cartCheck });
 
         }
 

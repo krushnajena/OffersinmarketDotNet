@@ -63,6 +63,10 @@ namespace AdminApi.Models
         public virtual DbSet<ViewCount> ViewCounts { get; set; }
 
         public virtual DbSet<Cart> Carts { get; set; }
+
+        public virtual DbSet<PopularStore> PopularStores { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {   
 
@@ -75,7 +79,7 @@ namespace AdminApi.Models
         
                        modelBuilder.Entity<Category>()
             .Property(s => s.CreatedOn)
-            .HasDefaultValue(System.DateTime.Now);
+            .HasDefaultValueSql("getdate()");
 
            modelBuilder.Entity<Category>()
             .Property(s => s.IsDeleted)
@@ -86,7 +90,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<StoreRatting>()
            .Property(s => s.CreatedOn)
-           .HasDefaultValue(System.DateTime.Now);
+          .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<StoreRatting>()
              .Property(s => s.IsDeleted)
@@ -96,7 +100,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<Follower>()
            .Property(s => s.CreatedOn)
-           .HasDefaultValue(System.DateTime.Now);
+           .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<Follower>()
              .Property(s => s.IsDeleted)
@@ -105,7 +109,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<State>()
            .Property(s => s.CreatedOn)
-           .HasDefaultValue(System.DateTime.Now);
+           .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<State>()
              .Property(s => s.IsDeleted)
@@ -115,7 +119,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<City>()
            .Property(s => s.CreatedOn)
-           .HasDefaultValue(System.DateTime.Now);
+           .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<City>()
              .Property(s => s.IsDeleted)
@@ -125,7 +129,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<Area>()
         .Property(s => s.CreatedOn)
-        .HasDefaultValue(System.DateTime.Now);
+        .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<Area>()
              .Property(s => s.IsDeleted)
@@ -135,7 +139,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<Banner>()
        .Property(s => s.CreatedOn)
-       .HasDefaultValue(System.DateTime.Now);
+       .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<Banner>()
              .Property(s => s.IsDeleted)
@@ -144,7 +148,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<Cuisine>()
       .Property(s => s.CreatedOn)
-      .HasDefaultValue(System.DateTime.Now);
+      .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<Cuisine>()
              .Property(s => s.IsDeleted)
@@ -154,7 +158,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<Store>()
     .Property(s => s.CreatedOn)
-    .HasDefaultValue(System.DateTime.Now);
+    .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<Store>()
              .Property(s => s.IsDeleted)
@@ -172,7 +176,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<RestaurantImage>()
      .Property(s => s.CreatedOn)
-     .HasDefaultValue(System.DateTime.Now);
+     .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<RestaurantImage>()
              .Property(s => s.IsDeleted)
@@ -186,7 +190,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<Story>()
    .Property(s => s.CreatedOn)
-   .HasDefaultValue(System.DateTime.Now);
+   .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<Story>()
              .Property(s => s.IsDeleted)
@@ -197,7 +201,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<RestaurantPriceForTwo>()
    .Property(s => s.CreatedOn)
-   .HasDefaultValue(System.DateTime.Now);
+   .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<RestaurantPriceForTwo>()
              .Property(s => s.IsDeleted)
@@ -207,7 +211,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<RestaurantCuisine>()
    .Property(s => s.CreatedOn)
-   .HasDefaultValue(System.DateTime.Now);
+   .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<RestaurantCuisine>()
              .Property(s => s.IsDeleted)
@@ -228,7 +232,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<Product>()
   .Property(s => s.CreatedOn)
-  .HasDefaultValue(System.DateTime.Now);
+  .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<Product>()
              .Property(s => s.IsDeleted)
@@ -238,7 +242,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<ProductImage>()
   .Property(s => s.CreatedOn)
-  .HasDefaultValue(System.DateTime.Now);
+  .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<ProductImage>()
              .Property(s => s.IsDeleted)
@@ -248,7 +252,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<ProductSpecification>()
 .Property(s => s.CreatedOn)
-.HasDefaultValue(System.DateTime.Now);
+.HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<ProductSpecification>()
              .Property(s => s.IsDeleted)
@@ -277,7 +281,7 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<ViewCount>()
 .Property(s => s.CreatedOn)
-.HasDefaultValue(System.DateTime.Now);
+.HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<ViewCount>()
              .Property(s => s.IsDeleted)
@@ -287,12 +291,32 @@ namespace AdminApi.Models
 
             modelBuilder.Entity<Cart>()
 .Property(s => s.CreatedOn)
-.HasDefaultValue(System.DateTime.Now);
+.HasDefaultValueSql("getdate()");
+
+
 
             modelBuilder.Entity<Cart>()
              .Property(s => s.IsDeleted)
              .HasDefaultValue(false)
              .ValueGeneratedNever();
+
+
+            modelBuilder.Entity<PopularStore>()
+.Property(s => s.CreatedOn)
+.HasDefaultValueSql("getdate()");
+
+
+
+            modelBuilder.Entity<PopularStore>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+
+            modelBuilder.Entity<Category>()
+.HasMany(c => c.Stores)
+.WithOne(e => e.Category).IsRequired(false);
             #endregion
         }
 
