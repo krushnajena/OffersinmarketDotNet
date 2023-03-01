@@ -52,7 +52,7 @@ namespace AdminClient.DTO
         public TimeSpan? SaturdayOpenTime { get; set; }
         public TimeSpan? SaturdayCloseTime { get; set; }
 
-        public int RefferedBy { get; set; }
+        public string RefferedBy { get; set; }
 
         public IFormFile file { get; set; }
     }
@@ -106,6 +106,6 @@ namespace AdminClient.DTO
         public TimeSpan? SaturdayOpenTime { get; set; }
         public TimeSpan? SaturdayCloseTime { get; set; }
 
-        public int RefferedBy { get; set; }
+        public string RefferedBy { get; set; }
     }
 }

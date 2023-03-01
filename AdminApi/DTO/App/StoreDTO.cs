@@ -54,7 +54,7 @@ namespace AdminApi.DTO.App
         public TimeSpan? SaturdayOpenTime { get; set; }
         public TimeSpan? SaturdayCloseTime { get; set; }
 
-        public int RefferedBy { get; set; }
+        public string RefferedBy { get; set; }
     }
 
 
@@ -108,6 +108,6 @@ namespace AdminApi.DTO.App
         public TimeSpan? SaturdayOpenTime { get; set; }
         public TimeSpan? SaturdayCloseTime { get; set; }
 
-        public int RefferedBy { get; set; }
+        public string RefferedBy { get; set; }
     }
 }

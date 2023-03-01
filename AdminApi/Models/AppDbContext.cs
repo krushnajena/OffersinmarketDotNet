@@ -66,7 +66,9 @@ namespace AdminApi.Models
 
         public virtual DbSet<PopularStore> PopularStores { get; set; }
 
+        public virtual DbSet<AdsCredit> AdsCredits { get; set; }
 
+        public virtual DbSet<Notification> Notifications { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {   
 
@@ -77,7 +79,7 @@ namespace AdminApi.Models
             //Hospital
 
         
-                       modelBuilder.Entity<Category>()
+           modelBuilder.Entity<Category>()
             .Property(s => s.CreatedOn)
             .HasDefaultValueSql("getdate()");
 
@@ -317,6 +319,33 @@ namespace AdminApi.Models
             modelBuilder.Entity<Category>()
 .HasMany(c => c.Stores)
 .WithOne(e => e.Category).IsRequired(false);
+
+
+            modelBuilder.Entity<AdsCredit>()
+.Property(s => s.CreatedOn)
+.HasDefaultValueSql("getdate()");
+
+
+
+            modelBuilder.Entity<AdsCredit>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+
+            modelBuilder.Entity<Notification>()
+.Property(s => s.CreatedOn)
+.HasDefaultValueSql("getdate()");
+
+
+
+            modelBuilder.Entity<Notification>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
             #endregion
         }
 
