@@ -69,6 +69,8 @@ namespace AdminApi.Models
         public virtual DbSet<AdsCredit> AdsCredits { get; set; }
 
         public virtual DbSet<Notification> Notifications { get; set; }
+
+        public virtual DbSet<Support> Supports { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {   
 
@@ -341,6 +343,19 @@ namespace AdminApi.Models
 
 
             modelBuilder.Entity<Notification>()
+             .Property(s => s.IsDeleted)
+             .HasDefaultValue(false)
+             .ValueGeneratedNever();
+
+
+
+            modelBuilder.Entity<Support>()
+.Property(s => s.CreatedOn)
+.HasDefaultValueSql("getdate()");
+
+
+
+            modelBuilder.Entity<Support>()
              .Property(s => s.IsDeleted)
              .HasDefaultValue(false)
              .ValueGeneratedNever();
