@@ -542,7 +542,7 @@ namespace AdminApi.Controllers
 
                                })
                                
-                               .Where(c => c.IsDeleted == false && c.TernaryCategoryId == CategoryId && c.IsActive ==true && c.InStock == true),
+                               .Where(c => c.IsDeleted == false &&  c.TernaryCategoryId == CategoryId && c.IsActive ==true && c.InStock == true),
                              
                            }).Where(opt =>  opt.IsDeleted == false && opt.Products.Count()>0).ToList();
 

@@ -322,5 +322,86 @@ namespace AdminApi.Controllers
 
 
 
+        [HttpGet]
+        public IActionResult GetProductListForApproval()
+        {
+
+            var objProducts = _context.Products.Include(s => s.ProductImages)
+                                             .Include(s => s.ProductSpecifications)
+                                             .Include(S=>S.Store)
+                                            
+
+
+                                   .Select(p => new
+                                   {
+
+                                       StoreId = p.StoreId,
+                                       ProductId = p.ProductId,
+                                       ProductCode = p.ProductCode,
+                                       ProductName = p.ProductName,
+                                       CategoryId = p.CategoryId,
+                                       SecondaryCategoryId = p.SecondaryCategoryId,
+                                       TernaryCategoryId = p.TernaryCategoryId,
+                                       MRP = p.MRP,
+                                       SellingPrice = p.SellingPrice,
+                                       Discount = p.MRP - p.SellingPrice,
+                                       DiscountPercentage = (p.MRP - p.SellingPrice) > 0 ? (((p.MRP - p.SellingPrice) / p.MRP) * 100) : 0,
+                                       Unit = p.Unit,
+                                       ProductDescription = p.ProductDescription,
+                                       IsActive = p.IsActive,
+                                       InStock = p.InStock,
+                                       IsDeleted = p.IsDeleted,
+                                       ProductView = p.ProductView,
+                                       ProductImages = p.ProductImages.Where(c => c.IsDeleted == false),
+                                       ProductSpecifications = p.ProductSpecifications.Where(c => c.IsDeleted == false),
+                                       p.Store.StoreName,
+                                       p.Store.StoreCode,
+                                       p.Store.BusineessContactInfo,
+                                       p.Store.Address,
+                                   }).Where(opt =>  opt.IsDeleted == false && opt.IsActive == false).ToList();
+            return Ok(new { products = objProducts });
+        }
+
+
+        [HttpGet]
+        public IActionResult GetProductList()
+        {
+
+            var objProducts = _context.Products.Include(s => s.ProductImages)
+                                             .Include(s => s.ProductSpecifications)
+                                             .Include(S => S.Store)
+
+
+
+                                   .Select(p => new
+                                   {
+
+                                       StoreId = p.StoreId,
+                                       ProductId = p.ProductId,
+                                       ProductCode = p.ProductCode,
+                                       ProductName = p.ProductName,
+                                       CategoryId = p.CategoryId,
+                                       SecondaryCategoryId = p.SecondaryCategoryId,
+                                       TernaryCategoryId = p.TernaryCategoryId,
+                                       MRP = p.MRP,
+                                       SellingPrice = p.SellingPrice,
+                                       Discount = p.MRP - p.SellingPrice,
+                                       DiscountPercentage = (p.MRP - p.SellingPrice) > 0 ? (((p.MRP - p.SellingPrice) / p.MRP) * 100) : 0,
+                                       Unit = p.Unit,
+                                       ProductDescription = p.ProductDescription,
+                                       IsActive = p.IsActive,
+                                       InStock = p.InStock,
+                                       IsDeleted = p.IsDeleted,
+                                       ProductView = p.ProductView,
+                                       ProductImages = p.ProductImages.Where(c => c.IsDeleted == false),
+                                       ProductSpecifications = p.ProductSpecifications.Where(c => c.IsDeleted == false),
+                                       p.Store.StoreName,
+                                       p.Store.StoreCode,
+                                       p.Store.BusineessContactInfo,
+                                       p.Store.Address,
+                                   }).Where(opt => opt.IsDeleted == false ).ToList();
+            return Ok(new { products = objProducts });
+        }
+
     }
 }
