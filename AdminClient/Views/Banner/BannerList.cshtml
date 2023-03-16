@@ -1,0 +1,161 @@
+﻿@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http
+@inject IConfiguration Configuration;
+
+@{
+    ViewBag.Title = "Banner List";
+    string apiUrl = Configuration.GetValue<string>("WebAPIBaseUrl");
+}
+<style>
+    img.tableimage {
+        max-width: 100%;
+        height: 54px;
+    }
+    table.dataTable.nowrap th, table.dataTable.nowrap td {
+        white-space: nowrap;
+        width: 21%;
+    }
+</style>
+<div class="page-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#"><i class="fe fe-file-text mr-1"></i> Admin Console</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Banner List</li>
+    </ol>
+    <div class="ml-auto">
+        <a href="~/Banner/BannerCreate" class="btn btn-primary btn-icon btn-sm text-white mr-2">
+            <span>
+                <i class="fe fe-plus"></i>
+            </span> Banner Create
+        </a>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+
+        <form action="#" role="form" class="card validate" id="formPost" enctype="multipart/form-data">
+            <div class="card-header">
+                <h3 class="card-title">Banner List</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="bannerTable" class="table table-striped table-bordered nowrap dataTable no-footer dtr-inline" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Banner Type</th>
+                                <th>Store Name</th>
+                                <th>Banner Image</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@section scripts{
+    <script>
+        loadBanner()
+        async function loadBanner() {
+            var table = $('#bannerTable').DataTable();
+            table.destroy();
+            table = $('#bannerTable').dataTable({
+                "paginationType": "full_numbers",
+                "dom": 'Bfrtip',
+                "buttons": ['excel', 'pdf', 'print'],
+                "searching": true,
+                "paging": true,
+                "sort": true,
+                "info": true,
+                "ajax": {
+                    "url": '@apiUrl/api/Banner/GetBannerList',
+                    "type": "GET",
+                    "dataType": "json",
+                    "headers": {
+                        "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    },
+                    "error": function (data) {
+                        if (data.status == 401) {
+                            window.location.replace('/Message/TokenExpire');
+                        } else if (data.status == 403) {
+                            window.location.replace('/Message/Unauthorize');
+                        }
+                    }
+
+                },
+
+                "order": [],
+                "columns": [
+
+                    { "data": "bannerType", "orderable": true },
+
+                    { "data": "storeName", "orderable": true },
+                    {
+                        "render": function (data, type, row) {
+                            if (row.image === '')
+                                return '';
+                            else
+                                return '<img class="tableimage" src="' + row.image + '"/>'
+                        }
+                    },
+                    {
+                        "render": function (data, type, row) {
+
+                            return '      <a href="../Banner/BannerEdit?bannerId=' + row.bannerId + '">edit</a> &nbsp;      <button class="btn btn-secondary btn-sm rounded-circle" title="Delete" data-target="#delete" data-title="Delete" data-toggle="modal" data-id=' + row.bannerId + '><i class="material-icons">delete</i></button>'
+
+                        }
+                    },
+
+                ]
+            });
+        }
+
+        $('#bannerTable tbody').on('click', 'button[data-target="#delete"]', function () {
+            var id = $(this).data('id');
+            swal({
+                html: true,
+                title: "Are you sure?",
+                text: "You will not be able to recover this data!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, confirm it!",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    type: "GET",
+                    url: "@apiUrl/api/Banner/DeleteBanner/" + id + "/" + @Context.Session.GetInt32("UserId"),
+                    contentType: "application/json; charset=utf-8",
+                    headers: {
+                        "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    },
+                    dataType: "json",
+                    success: function (data, statusText, xhr) {
+                        if (xhr.status == 200) {
+                            $('#bannerTable').DataTable().ajax.reload(null, false);
+                            sweetAlert({
+                                html: true,
+                                title: "Banner",
+                                text: "Successfully deleted!",
+                                type: "success"
+                            });
+                        } else if (xhr.status == 202) {
+                            sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                        } else {
+                            sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                        }
+                    },
+                    error: function (data) {
+                        if (data.status == 401) {
+                            window.location.replace('/Message/TokenExpire');
+                        } else if (data.status == 403) {
+                            window.location.replace('/Message/Unauthorize');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

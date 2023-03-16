@@ -215,9 +215,7 @@
                 "order": [],
                 "columns": [
                     { "data": "categoryName", "orderable": true },
-                   /* { "data": "alias", "orderable": true, "visible": false },*/
-                    {
-                        "render": function (data, type, row) {
+                    {"render": function (data, type, row) {
                             if (row.icon === '')
                                 return '';
                             else
@@ -225,8 +223,6 @@
                         }
                     },
                     { "data": "parentName", "orderable": true},
-                    //{ "data": "template", "orderable": true, "visible": false},
-                    //{ "data": "landing", "orderable": true, "visible": false },
                     { "data": "order", "orderable": true, "visible": false },
                     {
                         "render": function (data, type, row) {
