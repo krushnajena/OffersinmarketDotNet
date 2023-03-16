@@ -6,6 +6,7 @@ using System.IO;
 using System;
 using System.Net.Http.Headers;
 using AdminClient.Model.Store;
+using Microsoft.AspNetCore.Http;
 
 namespace AdminClient.Controllers
 {
@@ -87,6 +88,27 @@ namespace AdminClient.Controllers
             var a = _store.CreateStore(store);
 
             return Ok(a);
+        }
+
+        [HttpPost]
+        public IActionResult MessageImageUpload(IFormFile file)
+        {
+            if (file == null)
+            {
+
+                string filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+
+                filename = EnsureCorrectFilename(filename);
+
+                string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "message");
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + filename;
+                string imagePath = Path.Combine(uploadsFolder, uniqueFileName);
+                file.CopyTo(new FileStream(imagePath, FileMode.Create));
+                string photopath = "/message/" + uniqueFileName;
+                return Ok(photopath);
+            }
+            else
+                return  BadRequest("");
         }
 
         private string EnsureCorrectFilename(string filename)
