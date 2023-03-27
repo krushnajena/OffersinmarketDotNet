@@ -16,7 +16,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-
+ 
 namespace AdminApi.Controllers
 {
     [ApiController]
@@ -403,7 +403,22 @@ namespace AdminApi.Controllers
             return Ok(new { products = objProducts });
         }
 
-
+        [Authorize(Roles = "Admin")]
+        [HttpGet("{productid}")]
+        public ActionResult ApproveProduct(int productid)
+        {
+            try
+            {
+                var product = _context.Products.SingleOrDefault(opt => opt.ProductId == productid);
+                product.IsActive = true;
+                _context.SaveChanges();
+                return Ok(product);
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
 
 
     }

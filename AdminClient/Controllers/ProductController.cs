@@ -74,5 +74,10 @@ namespace AdminClient.Controllers
 
             return filename;
         }
+
+        public IActionResult ProductList()
+        {
+            return View();
+        }
     }
 }
