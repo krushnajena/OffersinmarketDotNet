@@ -1,0 +1,195 @@
+﻿@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http
+@inject IConfiguration Configuration;
+
+@{
+    ViewBag.Title = "Banner Create";
+    string apiUrl = Configuration.GetValue<string>("WebAPIBaseUrl");
+}
+
+<div class="page-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#"><i class="fe fe-file-text mr-1"></i> Admin Console</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Banner Create </li>
+    </ol>
+    <div class="ml-auto">
+        <a href="~/Banner/BannerList" class="btn btn-primary btn-icon btn-sm text-white mr-2">
+            <span>
+                <i class="fe fe-plus"></i>
+            </span> Banner List
+        </a>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+
+        <form action="#" role="form" class="card validate" id="formPost" enctype="multipart/form-data">
+            <div class="card-header">
+                <h3 class="card-title">Banner Create</h3>
+            </div>
+            <div class=" card-body">
+                <div class="row  mb-1">
+                    <div class="col-lg-6  mb-1">
+                        <label class="form-label">Banner Type &nbsp;<span style="color: red;"><b>*</b></span></label>
+                        <input type="text" class="form-control" id="BannerType" placeholder="Banner Type" required>
+                    </div>
+
+                </div>
+                <div class="row  mb-1">
+                    <div class="col-lg-6  mb-1">
+                        <label class="form-label">Store &nbsp;<span style="color: red;"><b>*</b></span></label>
+                        <select type="text" class="form-control" id="store" required></select>
+                    </div>
+                   
+                </div>
+                <div class="row  mb-1">
+                  
+                    <div class="col-lg-6  mb-1">
+                        <label class="form-label">Banner Image &nbsp;<span style="color: red;"><b>*</b></span></label>
+                        <input type="file" class="form-control" id="BannerImage" placeholder="Banner Image" required>
+                    </div>
+                </div>
+                <br />
+                <br />
+                <div class="row">
+                    <div class="col-lg-6">
+                        <button type="button" id="btnSave" class="btn btn-radius btn-success">Save</button>
+                        <a type="button" href="/Banner/BannerCreate" class="btn btn-radius btn-danger">Reset</a>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        $(function () {
+
+            $("#btnSave").click(function (e) {
+
+                if (!document.getElementById("formPost").checkValidity()) {
+                    e.preventDefault();
+                }
+                else {
+                    imgPath = '';
+                    var totalFiles = document.getElementById('BannerImage').files.length;
+                    if (totalFiles > 0) {
+                        uploadFile();
+                    }
+                    var model = {
+                        bannerType: $.trim($("#BannerType").val()),
+                        onClickType: 'Store',
+                        onClickId: parseInt($("#store").val()),
+                        image: imgPath,
+                        createdBy: @Context.Session.GetInt32("UserId"),
+                    }
+                    console.log(model);
+                    $.ajax({
+                        type: "POST",
+                        url: "@apiUrl/api/Banner/CreateBanner",
+                        data: JSON.stringify(model),
+                        contentType: "application/json; charset=utf-8",
+                        headers: {
+                            "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                        },
+                        dataType: "json",
+                        success: function (data, statusText, xhr) {
+                            if (xhr.status === 200) {
+                                console.log(data);
+                                sweetAlert({
+                                    html: true,
+                                    icon: "success",
+                                    title: "Banner",
+                                    text: "Successfully Banner!",
+                                    type: "success"
+                                });
+                            } else if (data.status === "duplicate") {
+                                sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                            } else if (data.status === "error") {
+                                sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                            } else {
+                                sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                            }
+                        },
+                        error: function (data) {
+                            if (data.status == 401) {
+                                window.location.replace('/Message/TokenExpire');
+                            } else if (data.status == 403) {
+                                window.location.replace('/Message/Unauthorize');
+                            } else if (data.status == 400) {
+                                sweetAlert("Validation Alert!", "Please check input data!", "warning");
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        function uploadFile() {
+            var totalFiles = document.getElementById('BannerImage').files.length;
+            if (totalFiles > 0) {
+                var formData = new FormData();
+                var files = document.getElementById('BannerImage').files;
+                formData.append("file", files[0]);
+                $.ajax(
+                    {
+                        url: "/Upload/ImgUpload",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        async: false,
+                        type: "POST",
+                        success: function (data) {
+                            imgPath = data;
+
+                        },
+                        error: function (data) {
+                            window.location.replace('/Message/SessionExpire');
+                        }
+                    }
+                );
+            }
+
+        }
+
+        GetStoreList()
+        function GetStoreList(Id) {
+            var opt = '';
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/Store/GetStoreList",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                success: function (res) {
+
+                    var options = [];
+                    options.push('<option value="">Select Store</option>');
+                    for (var i = 0; i < res.length; i++) {
+                        if (Id == res[i].storeId) {
+                            opt = 'selected'
+                        } else {
+                            opt = '';
+                        }
+                        options.push('<option value="' + res[i].storeId + '" ' + opt + '>' + res[i].storeName + '</option>');
+                    }
+                    $("#store").html(options.join(''));
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+    </script>
+}

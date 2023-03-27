@@ -201,10 +201,7 @@ namespace AdminApi.Controllers
         [HttpGet()]
         public IActionResult GetStores()
         {
-          var a=  _context.Stores
-                        .Include(s => s.StoreRattings)
-                        .Where(p => p.IsDeleted == false)
-                         .Select(p => new
+          var a=  _context.Stores.Include(s => s.StoreRattings).Where(p => p.IsDeleted == false).Select(p => new
                          {
                              StoreId = p.StoreId,
                              StoreName = p.StoreName,
@@ -263,7 +260,70 @@ namespace AdminApi.Controllers
 
         }
 
+        [HttpGet]
+        public IActionResult GetStoreList()
+        {
+            try
+            {
+                var list = (from u in _context.Stores
+                         
+                            select new
+                            {
+                                u.StoreId,
+                               u.StateId,
+                               u.StoreCode,
+                               u.UserId,
+                               u.StoreName,
+                               u.CategoryId,
+                               u.OwnerName,
+                               u.BusineessContactInfo,
+                               u.BusinessLogo,
+                               u.Lat,
+                               u.Long,
+                               u.Address,
+                               u.Landmark,
+                               u.CityId,
+                               u.AreaId,
+                               u.IsSundayOpen,
+                               u.SundayOpenTime,
+                               u.SundayCloseTime,
+                               u.IsMondayOpen,
+                               u.MondayOpenTime,
+                               u.MondayCloseTime,
+                               u.IsTuesdayOpen,
+                               u.TuesdayOpenTime,
+                               u.TuesdayCloseTime,
+                               u.IsWednessdayOpen,
+                               u.WednessdayOpenTime,
+                               u.WednessdayCloseTime,
+                               u.IsThursdayOpen,
+                               u.ThursdayOpenTime,
+                               u.ThursdayCloseTime,
+                               u.IsFridayOpen,
+                               u.FridayOpenTime,
+                               u.FridayCloseTime,
+                               u.IsSaturdayOpen,
+                               u.SaturdayOpenTime,
+                               u.SaturdayCloseTime,
+                            
+                               u.CreatedBy,
+                               u.CreatedOn,
+                               u.UpdatedBy,
+                               u.UpdatedOn,
+                            
 
+                             
+
+                                u.IsDeleted
+                            }).Where(x => x.IsDeleted == false).ToList();
+
+                return Ok(list);
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
 
 
         [HttpGet("{StoreId}")]
@@ -354,11 +414,6 @@ namespace AdminApi.Controllers
             return Ok(objStores);
 
         }
-
-
-
-
-
 
         [HttpGet("{CategoryId}")]
         public IActionResult GetStoresByCategoryId(int CategoryId)

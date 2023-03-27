@@ -76,5 +76,101 @@ namespace AdminApi.Controllers
                           ).Where(x => x.IsDeleted == false && x.BannerType == bannerType).ToList();
             return Ok(banner);
         }
+
+        [HttpGet]
+        public IActionResult GetBannerList()
+        {
+            try
+            {
+                var banner = (from u in _context.Banners
+                              join z in _context.Stores on u.OnClickId equals z.StoreId
+                              select new
+                              {
+                                  u.BannerType,
+                                  u.OnClickType,
+                                  u.OnClickId,
+                                  z.StoreName,
+                                  u.Image,
+                                  u.BannerId,
+                                  u.CreatedBy,
+
+                                  u.IsDeleted
+
+                              }
+
+
+                             ).Where(x => x.IsDeleted == false);
+
+                int totalRecords = banner.Count();
+                return Ok(new { data = banner, recordsTotal = totalRecords, recordsFiltered = totalRecords });
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult GetSingleBanner(int id)
+        {
+            try
+            {
+                var singleBanner = _bannerRepo.SelectById(id);
+                return Ok(singleBanner);
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public ActionResult UpdateBanner(UpdateBannerDTO updateBannerDTO)
+        {
+            try
+            {
+                try
+                {
+                    var objBanner = _context.Banners.SingleOrDefault(opt => opt.BannerId == updateBannerDTO.BannerId);
+                    objBanner.BannerType = updateBannerDTO.BannerType;
+                    objBanner.OnClickType = updateBannerDTO.OnClickType;
+                    objBanner.OnClickId = updateBannerDTO.OnClickId;
+                    objBanner.Image = updateBannerDTO.Image;
+                    objBanner.UpdatedBy = updateBannerDTO.CreatedBy;
+                    objBanner.UpdatedOn = System.DateTime.Now; ;
+                    _context.SaveChanges();
+                    return Ok(objBanner);
+                }
+                catch (Exception ex)
+                {
+                    return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("{Bannerid}/{DeletedBy}")]
+        public ActionResult DeleteBanner(int Bannerid, int DeletedBy)
+        {
+            try
+            {
+                var Banner = _context.Banners.SingleOrDefault(opt => opt.BannerId == Bannerid);
+                Banner.IsDeleted = true;
+                Banner.UpdatedBy = DeletedBy;
+                Banner.UpdatedOn = System.DateTime.Now;
+                _context.SaveChanges();
+                return Ok(Banner);
+            }
+            catch (Exception ex)
+            {
+                return Accepted(new Confirmation { Status = "error", ResponseMsg = ex.Message });
+            }
+        }
+
     }
 }
