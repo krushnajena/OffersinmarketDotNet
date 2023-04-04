@@ -2,6 +2,7 @@
 using AdminApi.Models;
 using AdminApi.Models.App;
 using AdminApi.Models.Helper;
+using EFCore.BulkExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -420,6 +421,97 @@ namespace AdminApi.Controllers
             }
         }
 
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateProduct(ProductDTO productDTO)
+        {
+            //var list = (from u in _context.Products select new { u.ProductId }).ToList();
+            //int newcode = list.Count + 1;
+
+            //string productcode = "";
+
+            //if (newcode < 10)
+            //    productcode = "OP" + "0000" + newcode.ToString();
+            //else if (newcode < 100)
+            //    productcode = "OP" + "000" + newcode.ToString();
+            //else if (newcode < 1000)
+            //    productcode = "OP" + "00" + newcode.ToString();
+            //else if (newcode < 10000)
+            //    productcode = "OP" + "0" + newcode.ToString();
+            //else
+            //    productcode = "OP" + newcode.ToString();
+
+            var objProduct = _context.Products.SingleOrDefault(opt => opt.ProductId == productDTO.ProductId);
+            // Product product = new Product();
+            objProduct.StoreId = productDTO.StoreId;
+            
+            objProduct.ProductName = productDTO.ProductName;
+            objProduct.CategoryId = productDTO.CategoryId;
+            objProduct.SecondaryCategoryId = productDTO.SecondaryCategoryId;
+            objProduct.TernaryCategoryId = productDTO.TernaryCategoryId;
+
+            objProduct.MRP = productDTO.MRP;
+            objProduct.SellingPrice = productDTO.SellingPrice;
+            objProduct.Unit = productDTO.Unit;
+            objProduct.ProductDescription = productDTO.ProductDescription;
+
+            objProduct.IsActive = false;
+            objProduct.InStock = true;
+            objProduct.ProductView = 0;
+            objProduct.CreatedBy = productDTO.CreatedBy;
+            _context.SaveChanges();
+
+            var ProductImages = (from u in _context.ProductImages
+                               
+                               select new { u.ProductImageId, u.ProductId, u.IsDeleted }).Where(x => x.IsDeleted == false && x.ProductId == productDTO.ProductId).ToList();
+            var ProductSpecifications = (from u in _context.ProductSpecifications
+
+                                 select new { u.ProductSpecificationId, u.ProductId, u.IsDeleted }).Where(x => x.IsDeleted == false && x.ProductId == productDTO.ProductId).ToList();
+            List<ProductSpecification> productSpecifications = new List<ProductSpecification>();
+            for (var i = 0; i < ProductSpecifications.Count; i++)
+            {
+                ProductSpecification productSpecificationstin = new ProductSpecification();
+                productSpecificationstin.ProductSpecificationId = ProductSpecifications[i].ProductSpecificationId;
+                productSpecificationstin.IsDeleted = true;
+                productSpecificationstin.UpdatedBy = productDTO.CreatedBy;
+                productSpecificationstin.UpdatedOn = System.DateTime.Now;
+                productSpecifications.Add(productSpecificationstin);
+            }
+            await _context.BulkUpdateAsync(productSpecifications);
+
+            List<ProductImage> productImages = new List<ProductImage>();
+            for (var i = 0; i < ProductImages.Count; i++)
+            {
+                ProductImage productImagetin = new ProductImage();
+                productImagetin.ProductImageId = ProductImages[i].ProductImageId;
+                productImagetin.IsDeleted = true;
+                productImagetin.UpdatedBy = productDTO.CreatedBy;
+                productImagetin.UpdatedOn = System.DateTime.Now;
+                productImages.Add(productImagetin);
+            }
+            await _context.BulkUpdateAsync(productImages);
+
+            for (int i = 0; i < productDTO.productImageDTOs.Count; i++)
+            {
+                ProductImage productImage = new ProductImage();
+                productImage.ProductId = ProductImages[i].ProductId;
+                productImage.Image = productDTO.productImageDTOs[i].Image;
+                productImage.CreatedBy = productDTO.CreatedBy;
+                _productImageRepo.Insert(productImage);
+            }
+
+            for (int i = 0; i < productDTO.productSpecificationsDTOs.Count; i++)
+            {
+                ProductSpecification productSpecification = new ProductSpecification();
+                productSpecification.ProductId = ProductImages[i].ProductId;
+                productSpecification.Key = productDTO.productSpecificationsDTOs[i].Key;
+                productSpecification.Value = productDTO.productSpecificationsDTOs[i].Value;
+                productSpecification.CreatedBy = productDTO.CreatedBy;
+                _productSpecificationRepo.Insert(productSpecification);
+            }
+            return Ok(objProduct);
+        }
 
     }
 }

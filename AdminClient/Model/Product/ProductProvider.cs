@@ -32,5 +32,19 @@ namespace AdminClient.Model.Product
                 throw ex;
             }
         }
+
+        public ProductViewModel UpdateProduct(ProductNewDTO productNewDTO)
+        {
+            try
+            {
+                ProductViewModel objupdateResults = new ProductViewModel();
+                objupdateResults = JsonConvert.DeserializeObject<ProductViewModel>(_objIHttpWebClients.PostRequest("api/Product/UpdateProduct", JsonConvert.SerializeObject(productNewDTO), true));
+                return objupdateResults;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
